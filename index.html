@@ -356,6 +356,592 @@ const TASKS = [
     assignees: [],
     status: "done"
   }
+
+ { 
+  id: 12,
+  title: "GPS module integration (NEO-M8N)",
+  desc: "Integrate NEO-M8N GPS over UART. Parse NMEA packets and expose latitude, longitude, altitude, and UTC time.",
+  url: "#",
+  tags: ["hardware", "firmware", "missions"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 13,
+  title: "Telemetry packet protocol specification",
+  desc: "Define binary telemetry structure including headers, timestamps, checksum validation, and sensor packet IDs.",
+  url: "#",
+  tags: ["firmware", "missions"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 14,
+  title: "LoRa radio communication subsystem",
+  desc: "Implement long-range LoRa telemetry fallback for low bandwidth communication during off-grid testing.",
+  url: "#",
+  tags: ["hardware", "firmware", "missions"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 15,
+  title: "Battery protection circuit validation",
+  desc: "Verify overcurrent, undervoltage, and thermal shutdown behavior under simulated load conditions.",
+  url: "#",
+  tags: ["power", "hardware"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 16,
+  title: "Solar panel deployment testing",
+  desc: "Validate solar panel mounting geometry and confirm charging performance under direct illumination.",
+  url: "#",
+  tags: ["power", "hardware"],
+  assignees: [],
+  status: "blocked"
+},
+{
+  id: 17,
+  title: "EPS PCB schematic design",
+  desc: "Design electrical power subsystem schematic including charging, regulation, telemetry, and fault protection.",
+  url: "#",
+  tags: ["power", "hardware"],
+  assignees: [],
+  status: "inprogress"
+},
+{
+  id: 18,
+  title: "Custom PCB layout for avionics stack",
+  desc: "Route 4-layer PCB for ESP32-S3, sensors, power rails, SD card, and communication interfaces.",
+  url: "#",
+  tags: ["hardware"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 19,
+  title: "I2C bus stability validation",
+  desc: "Stress test all I2C peripherals simultaneously and identify bus contention or timing issues.",
+  url: "#",
+  tags: ["firmware", "hardware"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 20,
+  title: "Watchdog recovery system",
+  desc: "Implement firmware watchdog and automatic reboot recovery for mission-critical failures.",
+  url: "#",
+  tags: ["firmware"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 21,
+  title: "OTA firmware update support",
+  desc: "Allow remote firmware updates over WiFi while preserving rollback safety and flash integrity.",
+  url: "#",
+  tags: ["firmware", "missions"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 22,
+  title: "Quaternion fusion algorithm tuning",
+  desc: "Tune sensor fusion parameters for stable orientation tracking under vibration and rapid motion.",
+  url: "#",
+  tags: ["firmware"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 23,
+  title: "Ground station GUI dark mode",
+  desc: "Implement theme switching with persistent user preference storage and adaptive graph colors.",
+  url: "#",
+  tags: ["gui"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 24,
+  title: "Ground station telemetry replay mode",
+  desc: "Allow playback of recorded telemetry sessions for debugging and post-flight analysis.",
+  url: "#",
+  tags: ["gui", "missions"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 25,
+  title: "CAN bus expansion support",
+  desc: "Prototype CAN bus architecture for future subsystem modularization and redundancy.",
+  url: "#",
+  tags: ["hardware", "firmware"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 26,
+  title: "Sensor calibration utility",
+  desc: "Create calibration interface for IMU offsets, environmental sensors, and thermal compensation.",
+  url: "#",
+  tags: ["firmware", "gui"],
+  assignees: [],
+  status: "inprogress"
+},
+{
+  id: 27,
+  title: "Mission state machine implementation",
+  desc: "Develop finite state machine handling boot, idle, launch, flight, recovery, and failsafe modes.",
+  url: "#",
+  tags: ["firmware", "missions"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 28,
+  title: "Flight event detection logic",
+  desc: "Detect launch, apogee, descent, and landing events using sensor fusion and pressure thresholds.",
+  url: "#",
+  tags: ["firmware", "missions"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 29,
+  title: "Real-time clock synchronization",
+  desc: "Synchronize RTC using GPS timestamps and preserve accurate timing across reboots.",
+  url: "#",
+  tags: ["firmware"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 30,
+  title: "Telemetry encryption layer",
+  desc: "Add AES encryption for telemetry packets transmitted over WiFi and LoRa links.",
+  url: "#",
+  tags: ["firmware", "missions"],
+  assignees: [],
+  status: "blocked"
+},
+{
+  id: 31,
+  title: "Ground station packet decoder",
+  desc: "Implement parser for binary telemetry frames with checksum verification and automatic recovery.",
+  url: "#",
+  tags: ["gui", "firmware"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 32,
+  title: "FreeRTOS task scheduling architecture",
+  desc: "Separate telemetry, sensing, communications, and logging into isolated RTOS tasks.",
+  url: "#",
+  tags: ["firmware"],
+  assignees: [],
+  status: "inprogress"
+},
+{
+  id: 33,
+  title: "Power consumption profiling",
+  desc: "Measure subsystem current draw under idle, active, and transmission workloads.",
+  url: "#",
+  tags: ["power", "hardware"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 34,
+  title: "Thermal chamber environmental testing",
+  desc: "Test electronics operation under high and low temperature conditions representative of flight.",
+  url: "#",
+  tags: ["hardware", "missions"],
+  assignees: [],
+  status: "blocked"
+},
+{
+  id: 35,
+  title: "Vibration resistance testing",
+  desc: "Validate connector stability and PCB mounting under simulated launch vibration conditions.",
+  url: "#",
+  tags: ["hardware", "missions"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 36,
+  title: "EMI shielding validation",
+  desc: "Identify electromagnetic interference between radio, sensors, and power regulation circuits.",
+  url: "#",
+  tags: ["hardware", "power"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 37,
+  title: "Mission timeline simulator",
+  desc: "Create desktop simulation tool for testing mission events without hardware deployment.",
+  url: "#",
+  tags: ["gui", "missions"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 38,
+  title: "Failsafe low-power operating mode",
+  desc: "Implement emergency low-power state when battery voltage drops below safe threshold.",
+  url: "#",
+  tags: ["power", "firmware"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 39,
+  title: "Filesystem integrity recovery system",
+  desc: "Prevent SD corruption during sudden power loss using buffered writes and transaction recovery.",
+  url: "#",
+  tags: ["firmware"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 40,
+  title: "PCB manufacturing review",
+  desc: "Perform DRC/ERC validation and finalize fabrication files before board production.",
+  url: "#",
+  tags: ["hardware"],
+  assignees: [],
+  status: "inprogress"
+},
+{
+  id: 41,
+  title: "Subsystem integration documentation",
+  desc: "Write detailed documentation for sensor buses, wiring, interfaces, and firmware architecture.",
+  url: "#",
+  tags: ["missions", "hardware", "firmware"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 42,
+  title: "Ground station connection manager",
+  desc: "Automatically reconnect telemetry streams after connection loss or ESP32 reboot.",
+  url: "#",
+  tags: ["gui"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 43,
+  title: "Live orbital visualization module",
+  desc: "Render real-time orientation and positional visualization using telemetry quaternion data.",
+  url: "#",
+  tags: ["gui", "missions"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 44,
+  title: "Telemetry CSV export utility",
+  desc: "Allow exporting telemetry sessions into CSV format for MATLAB and Python analysis.",
+  url: "#",
+  tags: ["gui"],
+  assignees: [],
+  status: "done"
+},
+{
+  id: 45,
+  title: "Launch readiness checklist system",
+  desc: "Create preflight verification checklist for sensors, power, firmware, and communications.",
+  url: "#",
+  tags: ["missions"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 46,
+  title: "Flight recovery beacon implementation",
+  desc: "Transmit periodic beacon packets after landing for easier recovery operations.",
+  url: "#",
+  tags: ["firmware", "missions"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 47,
+  title: "UART diagnostic console",
+  desc: "Expose debugging interface over serial with command-based sensor and subsystem inspection.",
+  url: "#",
+  tags: ["firmware"],
+  assignees: [],
+  status: "done"
+},
+{
+  id: 48,
+  title: "ESP32 memory fragmentation analysis",
+  desc: "Monitor heap usage and PSRAM allocation stability during prolonged mission runtime.",
+  url: "#",
+  tags: ["firmware"],
+  assignees: [],
+  status: "inprogress"
+},
+{
+  id: 49,
+  title: "Buck converter efficiency optimization",
+  desc: "Tune regulator switching performance to minimize thermal dissipation under load.",
+  url: "#",
+  tags: ["power"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 50,
+  title: "Antenna placement optimization",
+  desc: "Determine optimal antenna routing and placement to maximize telemetry reliability.",
+  url: "#",
+  tags: ["hardware", "missions"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 51,
+  title: "Environmental sensor fusion dashboard",
+  desc: "Combine BME688 and MLX90614 readings into a unified thermal and atmospheric visualization.",
+  url: "#",
+  tags: ["gui", "missions"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 52,
+  title: "Ground station authentication system",
+  desc: "Implement user authentication and permission-based telemetry access control.",
+  url: "#",
+  tags: ["gui", "firmware"],
+  assignees: [],
+  status: "blocked"
+},
+{
+  id: 53,
+  title: "Flash memory wear leveling",
+  desc: "Reduce repetitive writes to improve ESP32 flash lifespan during extended operation.",
+  url: "#",
+  tags: ["firmware"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 54,
+  title: "Sensor startup self-test suite",
+  desc: "Run automatic diagnostics during boot and flag failed peripherals before mission start.",
+  url: "#",
+  tags: ["firmware"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 55,
+  title: "Mechanical vibration dampening inserts",
+  desc: "Design and install TPU dampeners for IMU stabilization during dynamic testing.",
+  url: "#",
+  tags: ["hardware"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 56,
+  title: "Telemetry bandwidth optimization",
+  desc: "Reduce packet size and optimize transmission frequency for constrained communication links.",
+  url: "#",
+  tags: ["firmware", "missions"],
+  assignees: [],
+  status: "inprogress"
+},
+{
+  id: 57,
+  title: "Battery endurance runtime test",
+  desc: "Measure operational lifetime under realistic mission workloads and transmission intervals.",
+  url: "#",
+  tags: ["power", "missions"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 58,
+  title: "Recovery parachute deployment trigger",
+  desc: "Implement software-controlled deployment trigger logic based on altitude and descent rate.",
+  url: "#",
+  tags: ["missions", "firmware"],
+  assignees: [],
+  status: "blocked"
+},
+{
+  id: 59,
+  title: "Ground station alert notification system",
+  desc: "Generate alerts for sensor failures, voltage drops, packet loss, and thermal thresholds.",
+  url: "#",
+  tags: ["gui", "missions"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 60,
+  title: "Telemetry latency benchmark testing",
+  desc: "Measure end-to-end delay between onboard sensors and GUI visualization updates.",
+  url: "#",
+  tags: ["missions", "firmware", "gui"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 61,
+  title: "PCB bring-up and continuity testing",
+  desc: "Validate power rails, regulators, signal traces, and shorts after PCB fabrication.",
+  url: "#",
+  tags: ["hardware", "power"],
+  assignees: [],
+  status: "blocked"
+},
+{
+  id: 62,
+  title: "Mission data archival pipeline",
+  desc: "Automatically organize and archive telemetry sessions after each test flight.",
+  url: "#",
+  tags: ["gui", "missions"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 63,
+  title: "Launch rail fitment verification",
+  desc: "Verify CubeSat frame dimensions comply with launch rail clearance requirements.",
+  url: "#",
+  tags: ["hardware", "missions"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 64,
+  title: "Ground station map integration",
+  desc: "Display live GPS coordinates and tracking path on an interactive map interface.",
+  url: "#",
+  tags: ["gui", "missions"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 65,
+  title: "Telemetry checksum validation testing",
+  desc: "Inject corrupted packets and confirm CRC rejection and retransmission behavior.",
+  url: "#",
+  tags: ["firmware"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 66,
+  title: "High altitude pressure simulation",
+  desc: "Validate barometric sensor accuracy under simulated near-space pressure conditions.",
+  url: "#",
+  tags: ["hardware", "missions"],
+  assignees: [],
+  status: "blocked"
+},
+{
+  id: 67,
+  title: "Remote subsystem reset capability",
+  desc: "Allow ground station to remotely reboot specific onboard subsystems safely.",
+  url: "#",
+  tags: ["firmware", "missions"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 68,
+  title: "Live telemetry graph smoothing",
+  desc: "Apply configurable moving average and Kalman filtering to noisy live sensor graphs.",
+  url: "#",
+  tags: ["gui"],
+  assignees: [],
+ status: "todo"
+},
+{
+  id: 69,
+  title: "Mission anomaly detection module",
+  desc: "Automatically detect abnormal power draw, sensor spikes, or telemetry loss patterns.",
+  url: "#",
+  tags: ["firmware", "missions"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 70,
+  title: "ESP32 crash dump analysis system",
+  desc: "Capture and decode Guru Meditation faults for automated debugging reports.",
+  url: "#",
+  tags: ["firmware"],
+  assignees: [],
+  status: "inprogress"
+},
+{
+  id: 71,
+  title: "Hardware-in-the-loop simulation setup",
+  desc: "Simulate live sensor feeds into firmware to test mission logic before flight.",
+  url: "#",
+  tags: ["firmware", "missions"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 72,
+  title: "2U structural load analysis",
+  desc: "Perform finite element analysis on frame design to identify stress concentration points.",
+  url: "#",
+  tags: ["hardware"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 73,
+  title: "Ground station modular plugin system",
+  desc: "Allow future GUI widgets and telemetry parsers to be loaded dynamically.",
+  url: "#",
+  tags: ["gui"],
+  assignees: [],
+  status: "todo"
+},
+{
+  id: 74,
+  title: "Sensor redundancy failover logic",
+  desc: "Switch to backup sensors automatically if primary telemetry becomes invalid.",
+  url: "#",
+  tags: ["firmware", "missions"],
+  assignees: [],
+  status: "blocked"
+},
+{
+  id: 75,
+  title: "Flight readiness integrated systems test",
+  desc: "Run full mission sequence using all integrated hardware and ground station systems.",
+  url: "#",
+  tags: ["missions", "hardware", "firmware", "gui", "power"],
+  assignees: [],
+  status: "blocked"
+},
+{
+  id: 76,
+  title: "Post-flight telemetry analysis report",
+  desc: "Generate engineering report summarizing flight performance, telemetry integrity, and subsystem behavior.",
+  url: "#",
+  tags: ["missions", "gui"],
+  assignees: [],
+  status: "todo"
+},
 ];
 // ── END DATA ─────────────────────────────────────────────
 
