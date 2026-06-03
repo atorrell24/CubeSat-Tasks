@@ -1,3 +1,353 @@
+
+Claude finished the response
+I want to build a github page for my group to be able to see the tasks available and be able to choose it like this software-tasks
+[View 1](https://github.com/orgs/uf-mil/projects/22)
+[View 2](https://github.com/orgs/uf-mil/projects/22/views/2)
+[View 3](https://github.com/orgs/uf-mil/projects/22/views/3)
+Filter
+
+Todo
+10 (10)
+This item hasn't been started
+Blocked
+1 (1)
+In Progress
+1 (1)
+This is actively being worked on
+Done
+0 (0)
+This has been completed
+SubjuGator8 (8)
+[fix navtube hydrophones](https://github.com/uf-mil/mil2/issues/458)
+
+Click a value to filter the view
+[ros2 on navtube](https://github.com/uf-mil/mil2/issues/455)
+
+Click a value to filter the view
+Assignees: Isabella1245
+[Missions: Task 5- Survey for Octagon Image](https://github.com/uf-mil/mil2/issues/358)
+
+Missions
+Click a value to filter the view
+Assignees: sgupta1703
+[Getting Path Marker Heading](https://github.com/uf-mil/mil2/issues/429)
+
+Missions
+Click a value to filter the view
+Assignees: cbrxyz and alexoj46
+[Track sub9 config files](https://github.com/uf-mil/mil2/issues/119)
+
+enhancement
+Click a value to filter the view
+[robostack/pixi](https://github.com/uf-mil/mil2/issues/454)
+
+Click a value to filter the view
+Assignees: Iiquidate
+[Missions: Task 5 - Pick up trash](https://github.com/uf-mil/mil2/issues/377)
+
+Click a value to filter the view
+[Missions: Task 5- Navigate to Octagon using Acoustic Pinger](https://github.com/uf-mil/mil2/issues/345)
+
+Missions
+Click a value to filter the view except I am making this project for a cubesat project with this goal and materials CubeSat
+Materials Required:
+
+ESP32-S3-CAM module w/ OV5640 + PSRAM
+ESP32-S3 N8R8
+2S LiPo + small solar panel + TP4056 + INA219
+BNO085 9-DOF
+ESP32 firmware module
+BME688 + MLX90614 + onboard MCU temp
+3D Printing Our Goal for the project:We want to build a 2U cubesat system that includes an esp32, and a couple of sensors that can read important data that is typically common and seen within a regular cubesat model by a company such as NASA. We want to include a live monitor/camera that will record and show us what the cubesat sees as it flies up attached to the drone. We then want to use that data captured and implement our own gui where you can see live graphs and things like that. What else should we include in our goal and how does this reduce the material list
+Show more
+May 20
+
+Check frontend design skill
+Check frontend design skill
+Before I start building, let me ask a couple quick questions to make sure this fits your team perfectly.
+
+While you answer, I'll start building based on the most common case (dark techy theme, static tasks you edit manually) since it matches well with a CubeSat project. I can always adjust after!
+
+V
+
+Connecting to visualize...
+Here's your CubeSat task board! I pre-loaded it with tasks based on your materials list and goals. It includes:
+
+Board and list views — toggle between Kanban-style columns and a flat list
+Filter bar — search by keyword or filter by tag (Missions, Hardware, Firmware, Unassigned)
+Claim button — team members can click "Claim task" to mark a task as taken
+Status columns — Todo, Blocked, In Progress, Done with color coding
+On your project goals question: your current materials list is already fairly tight for a 2U. A few thoughts on what to add to the goal and what you might cut:
+
+Add to the goal: autonomous attitude determination (the BNO085 already enables this), thermal profiling over time (MLX90614 + BME688 together), and a simple ground station uplink acknowledgement protocol so the GUI confirms data receipt.
+
+Possible simplifications: The MLX90614 and BME688 both measure temperature — you could drop the MLX90614 if you only need ambient readings, keeping it only if you specifically want non-contact IR temperature. The ESP32 firmware module listed separately is redundant if you're already using the ESP32-S3 N8R8 as your main MCU — that likely covers both.
+
+To turn this into an actual GitHub Page, I can generate the full static HTML file you can drop into a gh-pages branch or /docs folder. Want me to do that?
+
+Q: How will tasks be managed? (This affects how the board loads data)
+A: Hardcoded/static tasks I'll edit manually
+
+Q: What's your team's vibe for the design?
+A: Minimal & professional
+
+May 20
+
+Viewed a file, ran a command, read a file
+Viewed a file, ran a command, read a file
+Here's your index.html — a clean, minimal task board ready for GitHub Pages.
+
+To publish it:
+
+In your repo, go to Settings → Pages
+Set the source to your main branch, /docs folder (or gh-pages branch)
+Drop index.html into that folder and push — GitHub will serve it at https://<your-org>.github.io/<repo>/
+To edit tasks, open the file and find the TASKS array near the top of the <script> block. Each task looks like:
+
+js
+{
+  id: 12,
+  title: "Your task title",
+  desc: "Short description shown on the card.",
+  url: "https://github.com/your-org/repo/issues/42",  // or "#" if none
+  tags: ["firmware"],   // any of: hardware, firmware, missions, gui, power
+  assignees: ["alice"], // initials shown as avatar bubbles
+  status: "todo"        // todo | blocked | inprogress | done
+}
+Just add/remove objects from that array and push — no build step, no dependencies.
+
+
+Index
+Code · HTML 
+how do i implement this into a git repo for my team to collaborate on
+
+May 20
+Here's the straightforward way to get this live for your team:
+
+1. Create the repo Go to github.com → New repository. Name it something like cubesat-tasks. Make it public (required for free GitHub Pages).
+
+2. Add the file
+
+bash
+git clone https://github.com/your-org/cubesat-tasks.git
+cd cubesat-tasks
+# copy index.html into this folder
+git add index.html
+git commit -m "add task board"
+git push
+3. Enable GitHub Pages In the repo → Settings → Pages → Source: "Deploy from a branch" → branch: main, folder: / (root) → Save.
+
+Your board will be live at https://your-org.github.io/cubesat-tasks within a minute or two.
+
+For team collaboration on tasks, since tasks are hardcoded in the file, the simplest workflow is:
+
+Each person forks or clones the repo
+To add/update a task, edit the TASKS array in index.html and open a pull request
+You merge it → GitHub Pages auto-updates
+If that feels heavy for quick updates, a lighter alternative is to designate one person as the "task owner" who edits and pushes directly to main whenever tasks change.
+
+One upgrade worth considering: if your team grows beyond ~5 people, editing raw HTML gets messy. At that point you'd want to pull the task data into a separate tasks.json file and have the page fetch it — that way contributors only ever touch the JSON, never the HTML. Want me to set that up instead? It's about 10 extra lines of code and makes collaboration much cleaner.
+
+how do i add the file to the repo
+
+May 20
+Since you already cloned the repo, just copy the downloaded index.html into the repo folder, then run these three commands:
+
+bash
+git add index.html
+git commit -m "add task board"
+git push
+If you're not sure where your repo folder is, it's wherever you ran git clone — it creates a folder with the repo name (e.g. cubesat-tasks). Just drop index.html in there before running the commands above.
+
+If you haven't cloned yet and want to skip the terminal entirely, you can do it through GitHub's website:
+
+Open your repo on github.com
+Click Add file → Upload files
+Drag index.html in and click Commit changes
+That's it — GitHub Pages will pick it up automatically.
+
+now what
+
+May 21
+Go back to your repo on GitHub and enable Pages:
+
+Click Settings (top of your repo page)
+Scroll down to Pages in the left sidebar
+Under Branch, select main and leave the folder as / (root)
+Click Save
+GitHub will show you a banner that says "Your site is live at https://..." — usually takes about 60 seconds. Open that link and your task board will be there.
+
+Share that URL with your team and they're good to go.
+
+how do i add people to the repo
+
+May 21
+Go to your repo on GitHub:
+
+Click Settings
+Click Collaborators in the left sidebar
+Click Add people
+Search by their GitHub username or email
+Click Add [username] to this repository
+They'll get an email invite and need to accept it before they can push changes.
+
+If your team is under a GitHub organization (like the uf-mil example you shared), you can instead add them to the org and give the whole team access at once under Settings → Collaborators and teams — cleaner for larger groups.
+
+if i want to update this html with new tasks how do I go about doing so
+
+May 21
+Two options depending on how comfortable you are with code:
+
+Through GitHub's website (easiest):
+
+Open your repo on github.com
+Click index.html
+Click the pencil icon (Edit) in the top right
+Find the TASKS array and add your new task by copying an existing one and changing the values
+Click Commit changes
+The page updates automatically in about 60 seconds.
+
+Through your local files:
+
+Open index.html in any text editor (VS Code, Notepad, etc.)
+Find the TASKS array and add your task
+Save the file, then run:
+bash
+git add index.html
+git commit -m "add new task: your task name"
+git push
+What a new task looks like — just copy this block and paste it before the last ]; in the array, changing the values:
+
+js
+{
+  id: 12,
+  title: "Your task title here",
+  desc: "Brief description of what needs to be done.",
+  url: "#",
+  tags: ["firmware"],
+  assignees: [],
+  status: "todo"
+},
+Make sure each task except the last one has a comma at the end of the closing }. That's the most common mistake that breaks things.
+
+what if I just want to add a entire new file and replace the old one
+
+May 21
+Through GitHub's website:
+
+Open your repo on github.com
+Click Add file → Upload files
+Drag your new index.html in
+GitHub will warn you it's replacing an existing file — that's fine, confirm it
+Click Commit changes
+Through terminal: Just copy the new file into your repo folder, replacing the old one, then:
+
+bash
+git add index.html
+git commit -m "update task board"
+git push
+Git will detect it changed and overwrite the old version. The live site updates within a minute.
+
+I think some of these tasks are overdoing what we are able to do. we are all beginners and have like a month and a half to get this done so lower the amount of tasks make it simpler and also for each tasks when we click assign I want it to describe the steps on how to begin, resources that could help, stuff like that
+
+7:42 PM
+Good call on scoping it down. Before I rebuild, one quick question:
+
+Q: What's your team's main focus for this month and a half?
+A: Get the sensors reading + logging data
+
+7:42 PM
+Perfect. I'll trim it down to ~6 focused, beginner-friendly tasks centered on sensors and logging, each with a step-by-step getting started guide when you click claim.
+
+Claude's response was interrupted.
+
+filter Missions Hardware Firmware GUI Power Unassigned 76 total 55 open 8 in progress 3 done Todo 55 Not yet started Camera module integration (OV5640 + ESP32-S3-CAM) Wire and test OV5640 camera with ESP32-S3-CAM, verify PSRAM allocation and confirm streaming output over HTTP. ha
+
+pasted
+
+7:43 PM
+Looks like the task board got way out of hand — 76 tasks is overwhelming for a beginner team with 6 weeks. Let me rebuild it lean and focused.
+
+
+Ran a command, read a file
+Ran a command, read a file
+Here's the rebuilt file — trimmed down to 7 focused tasks. Key changes:
+
+Click any card to open a detail panel with step-by-step getting started instructions and direct resource links for each task
+Scoped to what actually matters for your 6-week timeline: environment setup, three sensors, SD logging, power monitoring, and the frame
+"Claim" still works from both the card and inside the detail panel
+The one task already done (firmware base setup) shows in the Done column so your team can see progress from day one
+Just replace the index.html in your repo with this one and push — same process as before.
+
+
+Index
+Code · HTML 
+add a couple of more tasks maybe like 20? in total
+
+7:47 PM
+
+Ran a command, read a file
+Ran a command, read a file
+Here's the updated file with exactly 20 tasks. Here's what was added on top of the original 7:
+
+New hardware/firmware tasks:
+
+Wire and test I2C bus (scanner sketch)
+Read IR temperature from MLX90614
+Add a real-time clock for timestamps
+Combine all sensors into one firmware loop
+Camera module setup and test stream
+Send sensor data over WiFi (UDP)
+Sensor startup self-test
+30-minute data collection test
+New GUI tasks:
+
+Build a basic Python GUI to display sensor data
+Add live graphs to the Python GUI
+New wrap-up tasks:
+
+Write a team README and wiring diagram
+Final integration test before flight
+Every task still has step-by-step getting started instructions and resource links when you click on it. Replace the file in your repo and push the same way as before.
+
+
+Index
+Code · HTML 
+make it chronologically ordered as we want to see where to start stuff like that
+
+7:57 PM
+Good idea — here's the updated file with tasks ordered as a logical build sequence, from environment setup all the way to final integration test.
+
+
+Ran a command, read a file
+Ran a command, read a file
+Here's what changed:
+
+Every card now shows a number (#1 through #20) so your team can see exactly what order to tackle things in
+New "Timeline" view — replaces the old list view. Tasks are grouped into 7 phases so it's immediately obvious where you are in the project:
+Phase 1 — Foundation (tasks 1–3)
+Phase 2 — Sensors (tasks 4–7)
+Phase 3 — Power (tasks 8–9)
+Phase 4 — Data Logging (tasks 10–13)
+Phase 5 — Camera (task 14)
+Phase 6 — GUI (tasks 15–17)
+Phase 7 — Assembly & Testing (tasks 18–20)
+Modal header now shows "Task X of 20 · Phase Y" so anyone clicking a card knows exactly where it fits in the build
+Replace the file in your repo and push the same way as before.
+
+
+Index
+Code · HTML 
+
+
+
+
+
+Claude is AI and can make mistakes. Please double-check responses.
+
+
+raw
+Index · HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -46,6 +396,7 @@
   .stat-num { font-size: 20px; font-weight: 500; font-family: 'DM Mono', monospace; color: var(--text); line-height: 1; }
   .stat-lbl { font-size: 10px; color: var(--text-3); margin-top: 3px; letter-spacing: 0.04em; text-transform: uppercase; }
  
+  /* Board view */
   .board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
   .board-wrap.hidden { display: none; }
   .column { display: flex; flex-direction: column; }
@@ -58,6 +409,7 @@
   .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; margin-bottom: 8px; cursor: pointer; transition: box-shadow 0.15s, border-color 0.15s, transform 0.1s; animation: fadeUp 0.2s ease both; }
   .card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.07); border-color: var(--border-strong); transform: translateY(-1px); }
   @keyframes fadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+  .card-order { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text-3); margin-bottom: 4px; }
   .card-title { font-size: 13px; color: var(--text); line-height: 1.45; margin-bottom: 6px; font-weight: 400; }
   .card-desc { font-size: 11px; color: var(--text-3); line-height: 1.5; margin-bottom: 8px; }
   .card-foot { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
@@ -66,19 +418,36 @@
   .tag-firmware { background: var(--tag-firmware); color: var(--tag-firmware-text); }
   .tag-power    { background: var(--tag-power);    color: var(--tag-power-text);    }
   .tag-gui      { background: var(--tag-gui);      color: var(--tag-gui-text);      }
- 
   .claim-btn { margin-top: 8px; font-size: 10px; font-family: 'DM Mono', monospace; padding: 3px 9px; border-radius: 4px; border: 1px solid var(--border); background: transparent; color: var(--text-2); cursor: pointer; transition: all 0.12s; }
   .claim-btn:hover { border-color: var(--border-strong); color: var(--text); }
   .claim-btn.claimed { background: var(--text); color: #fff; border-color: var(--text); }
   .empty { font-size: 11px; color: var(--text-3); padding: 20px 0; text-align: center; font-family: 'DM Mono', monospace; }
  
+  /* Timeline / list view */
+  .list-view { display: none; }
+  .list-view.show { display: block; }
+  .phase-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-3); padding: 18px 0 8px; border-top: 1px solid var(--border); margin-top: 8px; }
+  .phase-label:first-child { border-top: none; margin-top: 0; }
+  .tl-row { display: flex; align-items: flex-start; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.1s; border-radius: 4px; }
+  .tl-row:hover { background: var(--surface); padding-left: 8px; }
+  .tl-num { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-3); min-width: 24px; padding-top: 2px; }
+  .tl-body { flex: 1; }
+  .tl-title { font-size: 13px; color: var(--text); margin-bottom: 2px; }
+  .tl-meta { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+  .tl-status { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-3); margin-left: auto; white-space: nowrap; }
+  .tl-claim { font-size: 10px; font-family: 'DM Mono', monospace; padding: 2px 8px; border-radius: 4px; border: 1px solid var(--border); background: transparent; color: var(--text-2); cursor: pointer; transition: all 0.12s; }
+  .tl-claim:hover { border-color: var(--border-strong); color: var(--text); }
+  .tl-claim.claimed { background: var(--text); color: #fff; border-color: var(--text); }
+ 
+  /* Modal */
   .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 200; align-items: center; justify-content: center; padding: 1rem; }
   .modal-bg.open { display: flex; }
   .modal { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); max-width: 520px; width: 100%; max-height: 85vh; overflow-y: auto; padding: 1.5rem; position: relative; animation: modalIn 0.18s ease; }
   @keyframes modalIn { from { opacity:0; transform:scale(0.97) translateY(8px); } to { opacity:1; transform:scale(1) translateY(0); } }
   .modal-close { position: absolute; top: 14px; right: 14px; background: var(--surface2); border: none; border-radius: 50%; width: 26px; height: 26px; cursor: pointer; font-size: 14px; color: var(--text-2); display: flex; align-items: center; justify-content: center; transition: background 0.12s; }
-  .modal-close:hover { background: var(--border); }
-  .modal-tag-row { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 10px; }
+  .modal-close:hover { background: #e0dfd8; }
+  .modal-order { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-3); margin-bottom: 6px; }
+  .modal-tag-row { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 8px; }
   .modal-title { font-size: 16px; font-weight: 500; color: var(--text); margin-bottom: 6px; line-height: 1.4; }
   .modal-desc { font-size: 13px; color: var(--text-2); margin-bottom: 1.2rem; line-height: 1.6; }
   .modal-section { margin-bottom: 1rem; }
@@ -96,14 +465,6 @@
   .modal-claim-btn:hover { background: var(--text); color: #fff; }
   .modal-claim-btn.claimed { background: var(--text); color: #fff; }
  
-  .list-view { display: none; }
-  .list-view.show { display: block; }
-  .list-table { width: 100%; border-collapse: collapse; }
-  .list-table th { font-size: 11px; font-family: 'DM Mono', monospace; letter-spacing: 0.05em; color: var(--text-3); text-align: left; padding: 6px 12px; border-bottom: 1px solid var(--border); font-weight: 400; }
-  .list-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: middle; cursor: pointer; }
-  .list-table tr:hover td { background: var(--surface); }
-  .status-pill { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-2); }
- 
   @media (max-width: 900px) { .board { grid-template-columns: repeat(2,1fr); } header { padding: 0 1rem; } main { padding: 1rem 1rem 3rem; } .sub-bar { padding: 8px 1rem; } .search-wrap input { width: 140px; } }
   @media (max-width: 560px) { .board { grid-template-columns: 1fr; } }
 </style>
@@ -119,7 +480,7 @@
   </div>
   <nav>
     <button class="nav-btn active" id="btn-board" onclick="setView('board')">Board</button>
-    <button class="nav-btn" id="btn-list" onclick="setView('list')">List</button>
+    <button class="nav-btn" id="btn-timeline" onclick="setView('timeline')">Timeline</button>
   </nav>
   <div class="header-right">
     <div class="search-wrap">
@@ -135,8 +496,6 @@
   <button class="filter-chip" id="fc-firmware" onclick="toggleFilter('firmware')">Firmware</button>
   <button class="filter-chip" id="fc-power"    onclick="toggleFilter('power')">Power</button>
   <button class="filter-chip" id="fc-gui"      onclick="toggleFilter('gui')">GUI</button>
-  <div class="sep"></div>
-  <button class="filter-chip" id="fc-unassigned" onclick="toggleFilter('unassigned')">Unassigned</button>
 </div>
  
 <main>
@@ -144,17 +503,13 @@
   <div class="board-wrap" id="board-wrap">
     <div class="board" id="board"></div>
   </div>
-  <div class="list-view" id="list-wrap">
-    <table class="list-table">
-      <thead><tr><th>Title</th><th>Status</th><th>Tags</th><th></th></tr></thead>
-      <tbody id="list-body"></tbody>
-    </table>
-  </div>
+  <div class="list-view" id="list-wrap"></div>
 </main>
  
 <div class="modal-bg" id="modal-bg" onclick="closeModal(event)">
   <div class="modal" id="modal">
     <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-order" id="m-order"></div>
     <div class="modal-tag-row" id="m-tags"></div>
     <div class="modal-title" id="m-title"></div>
     <div class="modal-desc" id="m-desc"></div>
@@ -171,10 +526,16 @@
 </div>
  
 <script>
+// ─────────────────────────────────────────────────────────────────
+// TASKS — ordered chronologically from first to last.
+// phase: groups tasks in the Timeline view.
+// status: "todo" | "blocked" | "inprogress" | "done"
+// tags: any of "hardware" | "firmware" | "power" | "gui"
+// ─────────────────────────────────────────────────────────────────
 const TASKS = [
-  // ── DONE ──────────────────────────────────────────────
+  // ── PHASE 1: Foundation ───────────────────────────────────────
   {
-    id: 1,
+    id: 1, order: 1, phase: "Phase 1 — Foundation",
     title: "ESP32-S3 base firmware project setup",
     desc: "Initialize the shared PlatformIO project in the team repo with folder structure, libraries, and a working build.",
     tags: ["firmware"], status: "done",
@@ -188,10 +549,8 @@ const TASKS = [
       { icon: "📄", name: "PlatformIO project structure", url: "https://docs.platformio.org/en/latest/projectconf/index.html", note: "Config file reference" }
     ]
   },
- 
-  // ── IN PROGRESS ────────────────────────────────────────
   {
-    id: 2,
+    id: 2, order: 2, phase: "Phase 1 — Foundation",
     title: "Set up the ESP32-S3 development environment",
     desc: "Install PlatformIO, create a new ESP32-S3 project, and flash a basic 'Hello World' to confirm your toolchain works.",
     tags: ["firmware"], status: "inprogress",
@@ -199,8 +558,8 @@ const TASKS = [
       "Install VS Code from code.visualstudio.com",
       "Inside VS Code, install the PlatformIO extension from the Extensions tab",
       "Open PlatformIO → New Project → select 'Espressif ESP32-S3-DevKitC-1' as the board",
-      "In main.cpp write a simple Serial.println(\"Hello\") inside loop() and upload to your board",
-      "Open the Serial Monitor at 115200 baud and confirm you see the output"
+      "In main.cpp write Serial.println(\"Hello\") inside loop() and upload to your board",
+      "Open Serial Monitor at 115200 baud and confirm you see the output"
     ],
     resources: [
       { icon: "📄", name: "PlatformIO ESP32-S3 board guide", url: "https://docs.platformio.org/en/latest/boards/espressif32/esp32-s3-devkitc-1.html", note: "Official board setup docs" },
@@ -209,13 +568,32 @@ const TASKS = [
     ]
   },
   {
-    id: 3,
-    title: "Wire and test I2C bus",
-    desc: "Confirm the ESP32-S3 can communicate over I2C by running an I2C scanner sketch and detecting connected devices.",
+    id: 3, order: 3, phase: "Phase 1 — Foundation",
+    title: "Write a team README and wiring diagram",
+    desc: "Document the full wiring setup and how to build and flash the firmware so any team member can get set up from scratch.",
+    tags: ["firmware", "hardware"], status: "todo",
+    steps: [
+      "Create or update README.md in the repo root",
+      "List every component and its wiring in a clear table: Component → Pin → ESP32 GPIO",
+      "Add a photo or Fritzing diagram of the breadboard wiring",
+      "Write step-by-step instructions for cloning the repo, installing PlatformIO, and flashing",
+      "Include a troubleshooting section: wrong baud rate, I2C not found, SD not mounting"
+    ],
+    resources: [
+      { icon: "📄", name: "Fritzing — wiring diagram tool", url: "https://fritzing.org/", note: "Free tool to draw breadboard diagrams" },
+      { icon: "📄", name: "GitHub Markdown guide", url: "https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax", note: "Formatting basics for README files" }
+    ]
+  },
+ 
+  // ── PHASE 2: Sensors ──────────────────────────────────────────
+  {
+    id: 4, order: 4, phase: "Phase 2 — Sensors",
+    title: "Wire and test the I2C bus",
+    desc: "Confirm the ESP32-S3 can communicate over I2C by running a scanner sketch and detecting connected devices.",
     tags: ["hardware", "firmware"], status: "inprogress",
     steps: [
       "Connect a sensor (e.g. BME688) to SDA (GPIO 8) and SCL (GPIO 9) with 4.7kΩ pull-up resistors to 3.3V",
-      "Upload the standard I2C scanner sketch — it prints the addresses of all detected I2C devices",
+      "Upload the standard I2C scanner sketch — it prints addresses of all detected I2C devices",
       "Open Serial Monitor and confirm the sensor address appears (e.g. 0x76 for BME688)",
       "If nothing shows, check wiring, confirm 3.3V power, and verify pull-ups are in place",
       "Document the I2C addresses of all your sensors in the repo README"
@@ -225,47 +603,8 @@ const TASKS = [
       { icon: "▶️", name: "I2C wiring basics for ESP32", url: "https://www.youtube.com/results?search_query=esp32+i2c+wiring+beginner", note: "YouTube beginner guide" }
     ]
   },
- 
-  // ── BLOCKED ────────────────────────────────────────────
   {
-    id: 4,
-    title: "3D print and assemble the 2U frame",
-    desc: "Print the CubeSat outer frame and mount the ESP32, sensor boards, and battery inside it. Blocked until PCB dimensions are finalized.",
-    tags: ["hardware"], status: "blocked",
-    steps: [
-      "Download a 2U CubeSat frame model from Printables or design one in Fusion 360",
-      "Confirm your board and battery dimensions fit inside before printing",
-      "Print in PLA or PETG at 20% infill, 3 perimeters — expect 6–10 hours",
-      "Test-fit all components dry before final assembly",
-      "Use M3 standoffs to mount boards and foam tape or zip ties for the battery"
-    ],
-    resources: [
-      { icon: "🖨️", name: "CubeSat frames on Printables", url: "https://www.printables.com/search/models?q=cubesat", note: "Free 3D printable frame models" },
-      { icon: "📐", name: "CubeSat standard dimensions", url: "https://www.cubesat.org/cubesatinfo", note: "Official 1U/2U size spec" },
-      { icon: "▶️", name: "Fusion 360 beginner guide", url: "https://www.youtube.com/results?search_query=fusion+360+beginner+tutorial", note: "If you want to design your own" }
-    ]
-  },
-  {
-    id: 5,
-    title: "Solar panel charging validation",
-    desc: "Confirm the TP4056 module charges the LiPo from the solar panel under direct light and doesn't overcharge. Blocked until frame and power wiring is done.",
-    tags: ["power", "hardware"], status: "blocked",
-    steps: [
-      "Wire solar panel output to the TP4056 IN+ and IN- pins",
-      "Connect a 2S LiPo to the B+ and B- pins of the TP4056",
-      "Point the panel at a bright light source and measure the charging LED behavior",
-      "Use INA219 to log input current from the panel and confirm it's within spec",
-      "Test that the TP4056 stops charging once the battery is full"
-    ],
-    resources: [
-      { icon: "📄", name: "TP4056 datasheet", url: "https://dlnmh9ip6v2uc.cloudfront.net/datasheets/Prototyping/TP4056.pdf", note: "Wiring diagram and charge specs" },
-      { icon: "▶️", name: "TP4056 solar charging tutorial", url: "https://www.youtube.com/results?search_query=tp4056+solar+panel+lipo+charging", note: "YouTube walkthrough" }
-    ]
-  },
- 
-  // ── TODO ───────────────────────────────────────────────
-  {
-    id: 6,
+    id: 5, order: 5, phase: "Phase 2 — Sensors",
     title: "Read data from the BME688 sensor",
     desc: "Wire the BME688 to the ESP32-S3 over I2C and print temperature, pressure, and humidity readings to the serial monitor.",
     tags: ["hardware", "firmware"], status: "todo",
@@ -283,7 +622,7 @@ const TASKS = [
     ]
   },
   {
-    id: 7,
+    id: 6, order: 6, phase: "Phase 2 — Sensors",
     title: "Read orientation from the BNO085 IMU",
     desc: "Wire the BNO085 over I2C and print roll, pitch, and yaw angles to the serial monitor.",
     tags: ["hardware", "firmware"], status: "todo",
@@ -301,24 +640,26 @@ const TASKS = [
     ]
   },
   {
-    id: 8,
+    id: 7, order: 7, phase: "Phase 2 — Sensors",
     title: "Read IR temperature from the MLX90614",
-    desc: "Wire the MLX90614 over I2C and print the object and ambient temperature readings to the serial monitor.",
+    desc: "Wire the MLX90614 over I2C and print object and ambient temperature readings to the serial monitor.",
     tags: ["hardware", "firmware"], status: "todo",
     steps: [
       "Connect MLX90614: VCC → 3.3V, GND → GND, SDA → GPIO 8, SCL → GPIO 9",
       "In PlatformIO add: lib_deps = adafruit/Adafruit MLX90614 Library",
       "Upload the basic example from the Adafruit MLX90614 library",
       "Serial Monitor should print object temp and ambient temp in Celsius",
-      "Point the sensor at something warm (like your hand) to confirm object temp changes"
+      "Point the sensor at your hand to confirm object temperature changes"
     ],
     resources: [
       { icon: "📦", name: "Adafruit MLX90614 library", url: "https://github.com/adafruit/Adafruit-MLX90614-Library", note: "Official library with examples" },
       { icon: "📄", name: "MLX90614 datasheet", url: "https://www.melexis.com/en/documents/documentation/datasheets/datasheet-mlx90614", note: "Wiring and I2C address info" }
     ]
   },
+ 
+  // ── PHASE 3: Power ────────────────────────────────────────────
   {
-    id: 9,
+    id: 8, order: 8, phase: "Phase 3 — Power",
     title: "Monitor battery voltage and current with INA219",
     desc: "Wire the INA219 and print live battery voltage and current draw to the serial monitor.",
     tags: ["hardware", "power"], status: "todo",
@@ -327,7 +668,7 @@ const TASKS = [
       "In PlatformIO add: lib_deps = adafruit/Adafruit INA219",
       "Upload the 'getCurrent' example from the Adafruit INA219 library",
       "Serial Monitor should show bus voltage (V) and current (mA)",
-      "Connect a small LED as a load and confirm current reading changes"
+      "Connect a small LED as a load and confirm the current reading changes"
     ],
     resources: [
       { icon: "📦", name: "Adafruit INA219 library", url: "https://github.com/adafruit/Adafruit_INA219", note: "Official library with examples" },
@@ -335,16 +676,52 @@ const TASKS = [
     ]
   },
   {
-    id: 10,
+    id: 9, order: 9, phase: "Phase 3 — Power",
+    title: "Solar panel charging validation",
+    desc: "Confirm the TP4056 charges the LiPo from the solar panel under direct light and doesn't overcharge. Blocked until frame and power wiring are done.",
+    tags: ["power", "hardware"], status: "blocked",
+    steps: [
+      "Wire solar panel output to the TP4056 IN+ and IN- pins",
+      "Connect a 2S LiPo to the B+ and B- pins of the TP4056",
+      "Point the panel at a bright light source and watch the charging LED",
+      "Use INA219 to log input current and confirm it's within spec",
+      "Test that the TP4056 stops charging once the battery is full"
+    ],
+    resources: [
+      { icon: "📄", name: "TP4056 datasheet", url: "https://dlnmh9ip6v2uc.cloudfront.net/datasheets/Prototyping/TP4056.pdf", note: "Wiring diagram and charge specs" },
+      { icon: "▶️", name: "TP4056 solar charging tutorial", url: "https://www.youtube.com/results?search_query=tp4056+solar+panel+lipo+charging", note: "YouTube walkthrough" }
+    ]
+  },
+ 
+  // ── PHASE 4: Logging ──────────────────────────────────────────
+  {
+    id: 10, order: 10, phase: "Phase 4 — Data Logging",
+    title: "Add a real-time clock for timestamps",
+    desc: "Add a DS3231 RTC module so logged data has accurate date and time stamps even after a reboot.",
+    tags: ["hardware", "firmware"], status: "todo",
+    steps: [
+      "Wire DS3231 RTC to the same I2C bus: SDA → GPIO 8, SCL → GPIO 9",
+      "In PlatformIO add: lib_deps = adafruit/RTClib",
+      "In setup(), initialize the RTC and set the current time if not already set",
+      "In loop(), call rtc.now() to get a DateTime object and format it as a string",
+      "Prepend the timestamp to each CSV row written to the SD card"
+    ],
+    resources: [
+      { icon: "📦", name: "RTClib by Adafruit", url: "https://github.com/adafruit/RTClib", note: "Simple RTC library for DS3231" },
+      { icon: "📄", name: "DS3231 wiring guide", url: "https://lastminuteengineers.com/ds3231-rtc-arduino-tutorial/", note: "Beginner tutorial with wiring diagrams" }
+    ]
+  },
+  {
+    id: 11, order: 11, phase: "Phase 4 — Data Logging",
     title: "Log all sensor data to SD card",
-    desc: "Write timestamped readings from all sensors to a .csv file on a microSD card after every second.",
+    desc: "Write timestamped readings from all sensors to a .csv file on microSD every second.",
     tags: ["firmware"], status: "todo",
     steps: [
       "Wire microSD module: CS → GPIO 10, MOSI → GPIO 11, MISO → GPIO 13, SCK → GPIO 12",
       "In PlatformIO add: lib_deps = greiman/SdFat",
       "In setup(), call SD.begin(CS_PIN) and open 'log.csv' with FILE_WRITE",
       "In loop(), write a CSV row every second: timestamp, temp, humidity, pressure, roll, pitch, yaw, voltage, current",
-      "After a test run, open the SD card on a computer and verify the data in Excel or Google Sheets"
+      "After a test run, open the SD card on a computer and verify the data in Google Sheets"
     ],
     resources: [
       { icon: "📦", name: "SdFat library", url: "https://github.com/greiman/SdFat", note: "Fast, reliable SD library for ESP32" },
@@ -353,9 +730,9 @@ const TASKS = [
     ]
   },
   {
-    id: 11,
+    id: 12, order: 12, phase: "Phase 4 — Data Logging",
     title: "Combine all sensors into one firmware loop",
-    desc: "Merge all individual sensor sketches into a single firmware file that reads every sensor and prints all values together each second.",
+    desc: "Merge all individual sensor sketches into a single firmware file that reads every sensor and logs all values together each second.",
     tags: ["firmware"], status: "todo",
     steps: [
       "Start from the SD logging sketch as your base",
@@ -365,28 +742,28 @@ const TASKS = [
       "Test for 5 minutes — confirm no crashes and all sensors read consistently"
     ],
     resources: [
-      { icon: "📄", name: "ESP32 multi-library example", url: "https://randomnerdtutorials.com/esp32-i2c-communication-arduino-ide/", note: "How to use multiple I2C devices together" }
+      { icon: "📄", name: "ESP32 multi-I2C device guide", url: "https://randomnerdtutorials.com/esp32-i2c-communication-arduino-ide/", note: "How to use multiple I2C devices together" }
     ]
   },
   {
-    id: 12,
-    title: "Add a real-time clock (RTC) for timestamps",
-    desc: "Add an RTC module so logged data has accurate date and time stamps even after a reboot.",
-    tags: ["hardware", "firmware"], status: "todo",
+    id: 13, order: 13, phase: "Phase 4 — Data Logging",
+    title: "Sensor startup self-test",
+    desc: "Add a boot-time check that confirms every sensor is reachable over I2C and prints a pass/fail result before the main loop starts.",
+    tags: ["firmware"], status: "todo",
     steps: [
-      "Wire a DS3231 RTC module to the same I2C bus (SDA GPIO 8, SCL GPIO 9)",
-      "In PlatformIO add: lib_deps = adafruit/RTClib",
-      "In setup(), initialize the RTC and set the current time if it's not already set",
-      "In loop(), call rtc.now() to get a DateTime object and format it as a string",
-      "Prepend the timestamp string to each SD card CSV row"
+      "In setup(), after initializing each sensor library, check if the init call returned true or false",
+      "Print a status line for each sensor: e.g. 'BME688: OK' or 'BNO085: FAIL'",
+      "If any sensor fails, blink the onboard LED rapidly and halt — so you catch problems before a test run",
+      "Test by unplugging one sensor at a time and confirming the correct failure message appears"
     ],
     resources: [
-      { icon: "📦", name: "RTClib by Adafruit", url: "https://github.com/adafruit/RTClib", note: "Simple RTC library for DS3231" },
-      { icon: "📄", name: "DS3231 wiring guide", url: "https://lastminuteengineers.com/ds3231-rtc-arduino-tutorial/", note: "Beginner tutorial with wiring diagrams" }
+      { icon: "📄", name: "ESP32 GPIO and LED blink guide", url: "https://randomnerdtutorials.com/esp32-digital-inputs-outputs-arduino/", note: "How to control LEDs and GPIO on ESP32" }
     ]
   },
+ 
+  // ── PHASE 5: Camera ───────────────────────────────────────────
   {
-    id: 13,
+    id: 14, order: 14, phase: "Phase 5 — Camera",
     title: "Camera module setup and test stream",
     desc: "Wire the OV5640 camera to the ESP32-S3-CAM and confirm a live MJPEG stream appears in a browser on the same WiFi network.",
     tags: ["hardware", "firmware"], status: "todo",
@@ -402,30 +779,32 @@ const TASKS = [
       { icon: "▶️", name: "ESP32-CAM setup video", url: "https://www.youtube.com/results?search_query=esp32+cam+ov5640+stream+tutorial", note: "YouTube beginner walkthrough" }
     ]
   },
+ 
+  // ── PHASE 6: GUI ──────────────────────────────────────────────
   {
-    id: 14,
+    id: 15, order: 15, phase: "Phase 6 — GUI",
     title: "Send sensor data over WiFi (UDP)",
     desc: "Transmit a simple sensor data packet from the ESP32-S3 to a laptop on the same network using UDP so the GUI can receive it.",
     tags: ["firmware"], status: "todo",
     steps: [
-      "Connect the ESP32-S3 to your WiFi network using WiFi.begin(ssid, password)",
-      "Create a WiFiUDP object and call udp.begin(port) to open a UDP socket",
+      "Connect the ESP32-S3 to WiFi using WiFi.begin(ssid, password)",
+      "Create a WiFiUDP object and call udp.begin(port) to open a socket",
       "In loop(), build a comma-separated string of sensor values and call udp.broadcastTo(packet, port)",
-      "On your laptop, open a terminal and run: nc -ul 4210 to listen for UDP packets",
-      "Confirm you see sensor values arriving every second"
+      "On your laptop, open a terminal and run: nc -ul 4210 to listen for incoming packets",
+      "Confirm sensor values arrive every second"
     ],
     resources: [
-      { icon: "📄", name: "ESP32 UDP example", url: "https://randomnerdtutorials.com/esp32-useful-wi-fi-functions-arduino/", note: "WiFi and UDP basics for ESP32" },
+      { icon: "📄", name: "ESP32 WiFi and UDP basics", url: "https://randomnerdtutorials.com/esp32-useful-wi-fi-functions-arduino/", note: "WiFi and UDP guide for ESP32" },
       { icon: "▶️", name: "ESP32 WiFi UDP tutorial", url: "https://www.youtube.com/results?search_query=esp32+udp+send+data+wifi", note: "YouTube walkthrough" }
     ]
   },
   {
-    id: 15,
+    id: 16, order: 16, phase: "Phase 6 — GUI",
     title: "Build a basic Python GUI to display sensor data",
     desc: "Write a simple Python script that receives UDP packets from the ESP32 and displays live sensor values in a window.",
     tags: ["gui"], status: "todo",
     steps: [
-      "Install Python 3 and run: pip install tkinter (usually built-in)",
+      "Install Python 3 from python.org if not already installed",
       "Write a Python script that opens a UDP socket on the same port as the ESP32",
       "Parse the incoming comma-separated string into individual values",
       "Display the values in a Tkinter label that updates every 500ms",
@@ -438,56 +817,44 @@ const TASKS = [
     ]
   },
   {
-    id: 16,
+    id: 17, order: 17, phase: "Phase 6 — GUI",
     title: "Add live graphs to the Python GUI",
     desc: "Replace plain text labels with live-updating line charts for temperature, humidity, and orientation using matplotlib.",
     tags: ["gui"], status: "todo",
     steps: [
       "Install matplotlib: pip install matplotlib",
-      "Use matplotlib's FuncAnimation to update a plot every 500ms with new incoming data",
-      "Create three subplots: temperature over time, humidity over time, and roll/pitch/yaw over time",
+      "Use matplotlib's FuncAnimation to redraw a plot every 500ms with new incoming data",
+      "Create three subplots: temperature over time, humidity over time, roll/pitch/yaw over time",
       "Store the last 60 seconds of data in a Python deque and plot it on each update",
-      "Test with the ESP32 running and confirm graphs scroll smoothly as new data arrives"
+      "Test with the ESP32 running and confirm graphs scroll smoothly as data arrives"
     ],
     resources: [
       { icon: "📦", name: "Matplotlib animation docs", url: "https://matplotlib.org/stable/api/animation_api.html", note: "FuncAnimation reference" },
       { icon: "▶️", name: "Live matplotlib graph tutorial", url: "https://www.youtube.com/results?search_query=matplotlib+live+graph+serial+data+python", note: "YouTube beginner walkthrough" }
     ]
   },
+ 
+  // ── PHASE 7: Assembly & Testing ───────────────────────────────
   {
-    id: 17,
-    title: "Sensor startup self-test",
-    desc: "Add a boot-time check that confirms every sensor is reachable over I2C and prints a pass/fail result before the main loop starts.",
-    tags: ["firmware"], status: "todo",
+    id: 18, order: 18, phase: "Phase 7 — Assembly & Testing",
+    title: "3D print and assemble the 2U frame",
+    desc: "Print the CubeSat outer frame and mount the ESP32, sensor boards, and battery inside it. Blocked until PCB dimensions are finalized.",
+    tags: ["hardware"], status: "blocked",
     steps: [
-      "In setup(), after initializing each sensor library, check if the init call returned true or false",
-      "Print a status line for each sensor: e.g. 'BME688: OK' or 'BNO085: FAIL'",
-      "If any sensor fails, blink the onboard LED rapidly and halt with while(true) so you know something is wrong before a test",
-      "Test by unplugging one sensor at a time to confirm it correctly reports failure"
+      "Download a 2U CubeSat frame model from Printables or design one in Fusion 360",
+      "Confirm your board and battery dimensions fit inside before printing",
+      "Print in PLA or PETG at 20% infill, 3 perimeters — expect 6–10 hours",
+      "Test-fit all components before final assembly",
+      "Use M3 standoffs to mount boards and foam tape or zip ties for the battery"
     ],
     resources: [
-      { icon: "📄", name: "ESP32 GPIO and LED blink guide", url: "https://randomnerdtutorials.com/esp32-digital-inputs-outputs-arduino/", note: "How to control LEDs and GPIO on ESP32" }
+      { icon: "🖨️", name: "CubeSat frames on Printables", url: "https://www.printables.com/search/models?q=cubesat", note: "Free 3D printable frame models" },
+      { icon: "📐", name: "CubeSat standard dimensions", url: "https://www.cubesat.org/cubesatinfo", note: "Official 1U/2U size spec" },
+      { icon: "▶️", name: "Fusion 360 beginner guide", url: "https://www.youtube.com/results?search_query=fusion+360+beginner+tutorial", note: "If you want to design your own frame" }
     ]
   },
   {
-    id: 18,
-    title: "Write a team README and wiring diagram",
-    desc: "Document the full wiring setup and how to build and flash the firmware so any team member can get set up from scratch.",
-    tags: ["firmware", "hardware"], status: "todo",
-    steps: [
-      "Create or update README.md in the repo root",
-      "List every component and its wiring connections in a clear table (Pin → GPIO)",
-      "Add a photo or Fritzing diagram of the breadboard wiring",
-      "Write step-by-step instructions for cloning the repo, installing PlatformIO, and flashing",
-      "Include a troubleshooting section for common issues (wrong baud rate, I2C not found, SD not mounting)"
-    ],
-    resources: [
-      { icon: "📄", name: "Fritzing (wiring diagram tool)", url: "https://fritzing.org/", note: "Free tool to draw breadboard diagrams" },
-      { icon: "📄", name: "GitHub README guide", url: "https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax", note: "Markdown formatting basics" }
-    ]
-  },
-  {
-    id: 19,
+    id: 19, order: 19, phase: "Phase 7 — Assembly & Testing",
     title: "Run a 30-minute data collection test",
     desc: "Run the full system for 30 minutes, log all sensor data to SD, then review the CSV to check for gaps, crashes, or bad readings.",
     tags: ["firmware", "hardware"], status: "todo",
@@ -495,15 +862,15 @@ const TASKS = [
       "Flash the combined sensor firmware and confirm all sensors pass self-test",
       "Insert SD card and let the system run for 30 minutes without touching it",
       "Pull the SD card and open log.csv in Google Sheets",
-      "Check for any missing rows, NaN values, or sudden jumps in sensor readings",
-      "Note the total file size and number of rows — calculate if storage will last a full flight"
+      "Check for missing rows, NaN values, or sudden jumps in sensor readings",
+      "Note total file size and row count — calculate whether storage will last a full flight"
     ],
     resources: [
-      { icon: "📄", name: "Google Sheets data import guide", url: "https://support.google.com/docs/answer/40608", note: "How to open a CSV in Google Sheets" }
+      { icon: "📄", name: "Google Sheets CSV import guide", url: "https://support.google.com/docs/answer/40608", note: "How to open a CSV in Google Sheets" }
     ]
   },
   {
-    id: 20,
+    id: 20, order: 20, phase: "Phase 7 — Assembly & Testing",
     title: "Final integration test before flight",
     desc: "Run all systems together — sensors, logging, camera stream, and GUI — for 10 minutes and confirm everything works simultaneously.",
     tags: ["firmware", "hardware", "gui", "power"], status: "todo",
@@ -515,7 +882,7 @@ const TASKS = [
       "Monitor INA219 battery readings — confirm the system runs for at least 20 minutes on battery alone"
     ],
     resources: [
-      { icon: "📄", name: "Pre-flight checklist template", url: "https://www.nasa.gov/smallsat-institute/", note: "NASA small satellite resources" }
+      { icon: "📄", name: "NASA small satellite resources", url: "https://www.nasa.gov/smallsat-institute/", note: "Pre-flight checklist inspiration" }
     ]
   }
 ];
@@ -527,7 +894,7 @@ const COLS = [
   { key: "done",       label: "Done",        dot: "#22c55e", hint: "Completed" },
 ];
  
-const TAG_CLASSES = { hardware: "tag-hardware", firmware: "tag-firmware", power: "tag-power", gui: "tag-gui" };
+const TAG_CLASSES = { hardware:"tag-hardware", firmware:"tag-firmware", power:"tag-power", gui:"tag-gui" };
  
 let filters = new Set();
 let claimed = new Set();
@@ -543,9 +910,9 @@ function toggleFilter(f) {
 function setView(v) {
   view = v;
   document.getElementById("btn-board").classList.toggle("active", v === "board");
-  document.getElementById("btn-list").classList.toggle("active",  v === "list");
+  document.getElementById("btn-timeline").classList.toggle("active", v === "timeline");
   document.getElementById("board-wrap").classList.toggle("hidden", v !== "board");
-  document.getElementById("list-wrap").classList.toggle("show",    v === "list");
+  document.getElementById("list-wrap").style.display = v === "timeline" ? "block" : "none";
   render();
 }
  
@@ -564,6 +931,7 @@ function tagHtml(tag) { return `<span class="tag ${TAG_CLASSES[tag]||''}">${tag}
 function cardHtml(t, delay) {
   const isClaimed = claimed.has(t.id);
   return `<div class="card" style="animation-delay:${delay}ms" onclick="openModal(${t.id})">
+    <div class="card-order">#${t.order}</div>
     <div class="card-title">${t.title}</div>
     <div class="card-desc">${t.desc}</div>
     <div class="card-foot">${t.tags.map(tagHtml).join('')}</div>
@@ -577,6 +945,7 @@ function render() {
   const done  = TASKS.filter(t=>t.status==="done").length;
   const prog  = TASKS.filter(t=>t.status==="inprogress").length;
   const open  = TASKS.filter(t=>t.status==="todo").length;
+ 
   document.getElementById("stats").innerHTML = `
     <div class="stat"><span class="stat-num">${total}</span><span class="stat-lbl">total</span></div>
     <div class="stat"><span class="stat-num">${open}</span><span class="stat-lbl">open</span></div>
@@ -593,15 +962,27 @@ function render() {
       </div>`;
     }).join('');
   } else {
-    document.getElementById("list-body").innerHTML = tasks.map(t => {
-      const col = COLS.find(c=>c.key===t.status);
-      const isClaimed = claimed.has(t.id);
-      return `<tr onclick="openModal(${t.id})">
-        <td>${t.title}</td>
-        <td><span class="status-pill"><span style="width:6px;height:6px;border-radius:50%;background:${col.dot};display:inline-block;"></span>${col.label}</span></td>
-        <td>${t.tags.map(tagHtml).join(' ')}</td>
-        <td><button class="claim-btn ${isClaimed?'claimed':''}" onclick="event.stopPropagation();toggleClaim(${t.id})">${isClaimed?'✓ claimed':'+ claim'}</button></td>
-      </tr>`;
+    // Timeline grouped by phase, ordered by task.order
+    const phases = [...new Set(tasks.map(t=>t.phase))];
+    const col = id => COLS.find(c=>c.key===TASKS.find(t=>t.id===id).status);
+    document.getElementById("list-wrap").innerHTML = phases.map(phase => {
+      const pt = tasks.filter(t=>t.phase===phase);
+      return `<div class="phase-label">${phase}</div>` +
+        pt.map(t => {
+          const c = COLS.find(c=>c.key===t.status);
+          const isClaimed = claimed.has(t.id);
+          return `<div class="tl-row" onclick="openModal(${t.id})">
+            <div class="tl-num">${t.order}</div>
+            <div class="tl-body">
+              <div class="tl-title">${t.title}</div>
+              <div class="tl-meta">
+                ${t.tags.map(tagHtml).join('')}
+                <span class="tl-status"><span style="width:6px;height:6px;border-radius:50%;background:${c.dot};display:inline-block;"></span>${c.label}</span>
+              </div>
+            </div>
+            <button class="tl-claim ${isClaimed?'claimed':''}" onclick="event.stopPropagation();toggleClaim(${t.id})">${isClaimed?'✓':'+ claim'}</button>
+          </div>`;
+        }).join('');
     }).join('');
   }
 }
@@ -620,6 +1001,7 @@ function openModal(id) {
   const t = TASKS.find(t=>t.id===id);
   if (!t) return;
   activeTaskId = id;
+  document.getElementById("m-order").textContent = `Task ${t.order} of ${TASKS.length} · ${t.phase}`;
   document.getElementById("m-tags").innerHTML = t.tags.map(tagHtml).join('');
   document.getElementById("m-title").textContent = t.title;
   document.getElementById("m-desc").textContent = t.desc;
@@ -647,8 +1029,12 @@ function closeModal(e) {
   activeTaskId = null;
 }
  
-document.addEventListener("keydown", e => { if (e.key==="Escape") { document.getElementById("modal-bg").classList.remove("open"); activeTaskId=null; } });
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") { document.getElementById("modal-bg").classList.remove("open"); activeTaskId = null; }
+});
+ 
 render();
 </script>
 </body>
 </html>
+ 
