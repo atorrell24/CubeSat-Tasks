@@ -1,0 +1,9 @@
+---
+version: 1.0.0
+description: default
+dependencies:
+  esp-idf-lib/eil-cmake-utils:
+    version: "*"
+    override_path: "../../../"
+  idf:
+    version: ">=5.2.0"

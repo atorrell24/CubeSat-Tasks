@@ -1,0 +1,50 @@
+---
+name: Run cmake tests
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  unit:
+    name: Run CMake Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run tests
+        run: cmake -P tests/runner.cmake
+
+  integration:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - esp32
+        esp-idf-version:
+          - latest
+
+    container:
+      image: espressif/idf:${{ matrix.esp-idf-version }}
+      env:
+        IDF_CLONE_SHALLOW: 1
+        IDF_CLONE_SHALLOW_DEPTH: 1
+
+    steps:
+      - name: source export.sh
+        run: |
+          . ${IDF_PATH}/export.sh
+          env | grep "IDF_" >> ${GITHUB_ENV}
+          echo "PATH=${PATH}" >> ${GITHUB_ENV}
+          echo "ESP_IDF_LIB_CI=yes" >> ${GITHUB_ENV}
+
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Build the example project
+        shell: bash
+        run: |
+          (cd "integration_tests/default" && idf.py set-target ${{ matrix.target }} && idf.py build)
