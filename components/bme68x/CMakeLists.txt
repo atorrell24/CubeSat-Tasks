@@ -1,0 +1,12 @@
+idf_component_register(
+    SRCS
+        "bme68x_i2c_esp_idf.c"
+        "bme68x_i2c_helper.c"
+        "BME68X_SensorAPI/bme68x.c"
+    INCLUDE_DIRS
+        "."
+        "BME68X_SensorAPI"
+    REQUIRES
+        driver
+        i2c_bus
+)

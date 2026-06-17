@@ -1,0 +1,15 @@
+---
+
+version: "0.1.0"
+description: "CMake utility library for ESP-IDF feature and peripheral detection."
+url: "https://github.com/esp-idf-lib/eil-cmake-utils"
+repository: "https://github.com/esp-idf-lib/eil-cmake-utils"
+issues: "https://github.com/esp-idf-lib/eil-cmake-utils/issues"
+maintainers:
+  - "trombik"
+  - "esp-idf-lib https://github.com/esp-idf-lib"
+license: "MIT"
+tags:
+  - cmake
+dependencies:
+  idf: ">=5.2"
