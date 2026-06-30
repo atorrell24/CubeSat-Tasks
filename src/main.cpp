@@ -1,37 +1,33 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "driver/gpio.h"
-#include "driver/i2c_master.h"
 #include "esp_log.h"
-#include "esp_camera.h"
-#include "bme68x_i2c_esp_idf.h"
-#include "i2c_bus.h"
-#include "ina219.h"
-#include "driver/uart.h"
-#include "mlx90614.h"
-#include "bno08x_driver.h"
+#include "cubesat_sensors.h"
 
+static const char *TAG = "main";
 
-
-
-
-
-
-
-#define LED_GPIO GPIO_NUM_41
 
 extern "C" void app_main(void)
-
 {
-    //int bme68xSensor;
-    //uint8_t i2c_addr = 0x77;
-    //i2c_bus_handle_t i2c_handle = NULL;
-    //const bme68x_i2c_config_t *i2c_conf;
-    while (true)
-    {
-        
-        //bme68xSensor = bme68x_sensor_create()
-        printf("Hello World");
+    // Set up the I2C bus + sensors
+    esp_err_t err = sensors_init();
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "sensor init failed, stopping");
+        return;
+    }
 
+    
+    while (true) {
+        float object_temp = 0.0f;
+
+        err = sensors_read_object_temp(&object_temp);
+        if (err == ESP_OK) {
+            ESP_LOGI(TAG, "Object temperature: %.2f C", object_temp);
+        } else {
+            ESP_LOGW(TAG, "read failed: %s", esp_err_to_name(err));
+        }
+
+        // ---- add more sensor reads / build your telemetry packet here ----
+
+        vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }
