@@ -5,26 +5,43 @@
 
 static const char *TAG = "main";
 
-
 extern "C" void app_main(void)
 {
-    // Set up the I2C bus + sensors
+    // Set up the I2C bus + sensors once, before the loop.
     esp_err_t err = sensors_init();
-    if (err != ESP_OK) {
+    if (err != ESP_OK)
+    {
         ESP_LOGE(TAG, "sensor init failed, stopping");
         return;
     }
 
-    
-    while (true) {
-        float object_temp = 0.0f;
+    while (true)
+    {
+        //MLX90614 Logic------------------------
+        mlx_data_t mlx = {};
 
-        err = sensors_read_object_temp(&object_temp);
-        if (err == ESP_OK) {
-            ESP_LOGI(TAG, "Object temperature: %.2f C", object_temp);
-        } else {
-            ESP_LOGW(TAG, "read failed: %s", esp_err_to_name(err));
+        err = sensors_read_mlx(&mlx);
+        if (err == ESP_OK)
+        {
+            ESP_LOGI(TAG, "MLX  object: %.2f C   ambient: %.2f C",
+                     mlx.object_temp_c, mlx.ambient_temp_c);
+            if (mlx.status == SENSOR_CRITICAL)
+            {
+                ESP_LOGE(TAG, "MLX CRITICAL: object temp %.2f C", mlx.object_temp_c);
+            }
+            else if (mlx.status == SENSOR_WARNING)
+            {
+                ESP_LOGW(TAG, "MLX WARNING: object temp %.2f C", mlx.object_temp_c);
+            }
         }
+        else
+        {
+            ESP_LOGW(TAG, "MLX read failed: %s", esp_err_to_name(err));
+        }
+
+
+        //INA219 Logic---------
+        
 
         // ---- add more sensor reads / build your telemetry packet here ----
 
