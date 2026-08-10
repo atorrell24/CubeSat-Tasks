@@ -4,6 +4,8 @@
 #include "esp_err.h"
 #include "driver/i2c_master.h"
 
+#include <stdint.h>
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -31,9 +33,22 @@ typedef struct {
 
 esp_err_t sensors_read_mlx(mlx_data_t *out);
 
-//INA Variables and Structs.
+// Variables and Structs.
 
+typedef struct {
+    uint32_t utc_seconds;
+    uint32_t utc_date;
+    double lat_deg;
+    double lon_deg;
+    float altitude_m;
+    uint8_t satellites;
+    bool valid;
+    sensor_status_t status;
 
+} atg_data_t;
+
+esp_err_t gps_init(void);
+esp_err_t sensors_read_gps(atg_data_t *out);
 
 
 

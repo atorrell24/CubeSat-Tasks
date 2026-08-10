@@ -2,10 +2,12 @@
 #include "mlx90614.h"           
 #include "driver/i2c_master.h"  
 #include "esp_log.h"
+#include "driver/uart.h"
 #include <esp_err.h>
 #include "i2cdev.h"
 
-static const char *TAG = "sensors";
+static const char *TAG = "MLX";
+static const char *GPS_TAG = "GPS";
 
 static i2c_master_bus_handle_t bus_handle;
 static mlx90614_handle_t        mlx_handle;
@@ -39,7 +41,7 @@ esp_err_t sensors_init(void)
         return err;
     }
 
-    ESP_LOGI(TAG, "Sensors initialized");
+    ESP_LOGI(TAG, "MLX initialized");
     return ESP_OK;
 }
 
@@ -76,4 +78,49 @@ esp_err_t sensors_read_mlx(mlx_data_t *out)
     return ESP_OK;
 }
 
+
+
+static const uart_port_t GPS_UART_port =  UART_NUM_1;
+static const int GPS_tx_pin = 1;
+static const int GPS_rx_pin = 2;
+static const int GPS_baud_rate = 9600;
+static const int GPS_rx_buffer_size = 2048;
+
+
+
+esp_err_t gps_init(void)
+{
+    uart_config_t cfg = {};
+    cfg.baud_rate = GPS_baud_rate;
+    cfg.data_bits = UART_DATA_8_BITS;
+    cfg.parity = UART_PARITY_DISABLE;
+    cfg.stop_bits = UART_STOP_BITS_1;
+    cfg.flow_ctrl = UART_HW_FLOWCTRL_DISABLE;
+    cfg.source_clk = UART_SCLK_DEFAULT;
+
+    esp_err_t err = uart_param_config(GPS_UART_port, &cfg);
+    if (err != ESP_OK) {
+        ESP_LOGE(GPS_TAG, "Config failed to initiate: %s", esp_err_to_name(err));
+        return err;
+    }
+
+
+    err = uart_set_pin(GPS_UART_port, GPS_tx_pin, GPS_rx_pin, UART_PIN_NO_CHANGE,UART_PIN_NO_CHANGE);
+    if (err != ESP_OK) {
+        ESP_LOGE(GPS_TAG, "Pins failed to initialize: %s", esp_err_to_name(err));
+        return err;
+    }
+
+
+    err = uart_driver_install(GPS_UART_port, GPS_rx_buffer_size, 0, 0, NULL,0);
+    if (err != ESP_OK) {
+        ESP_LOGE(GPS_TAG, "Driver failed to install: %s", esp_err_to_name(err));
+        return err;
+    }
+
+    ESP_LOGI(GPS_TAG, "GPS initialized");
+    return ESP_OK;
+
+    
+}
 
