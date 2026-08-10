@@ -86,6 +86,9 @@ static const int GPS_rx_pin = 2;
 static const int GPS_baud_rate = 9600;
 static const int GPS_rx_buffer_size = 2048;
 
+static char nmea_buf[100];
+static int  nmea_len = 0;
+
 
 
 esp_err_t gps_init(void)
@@ -122,5 +125,49 @@ esp_err_t gps_init(void)
     return ESP_OK;
 
     
+}
+
+esp_err_t sensors_read_gps(atg_data_t *out)
+{
+    uint8_t chunk[256];
+    
+    while (true)
+    {
+        int len = uart_read_bytes(GPS_UART_port, chunk, sizeof(chunk), pdMS_TO_TICKS(20));
+        if (len <= 0 ) break;
+        for(int i = 0; i < len; i++)
+        {
+            char c = (char)chunk[i];
+            if (c == '$')
+            {
+                nmea_len = 0;
+                nmea_buf[nmea_len] = c;
+                nmea_len++;  
+            }
+            else if (c == '\n' || c == '\r')
+            {
+                if (nmea_len > 0)
+                {
+                    nmea_buf[nmea_len] = '\0';
+                    printf("%s\n", nmea_buf);
+                    nmea_len = 0;
+                }
+                
+            }
+            else
+            {
+                if (nmea_len < (int)sizeof(nmea_buf) - 1)
+                {
+                    nmea_buf[nmea_len] = c;
+                    nmea_len++;
+                }
+                else
+                {
+                    nmea_len = 0; 
+                }
+            }
+        }
+    }
+    return ESP_OK;
 }
 
