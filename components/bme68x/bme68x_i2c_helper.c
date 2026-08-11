@@ -9,6 +9,7 @@
 #include <stdio.h>
 
 #include "bme68x_i2c_helper.h"
+#include "driver/i2c_master.h"
 #include "esp_log.h"
 
 /******************************************************************************/
@@ -20,19 +21,76 @@ static i2c_bus_device_handle_t intf_conf;
 /*!
  * I2C read function map to COINES platform
  */
-BME68X_INTF_RET_TYPE bme68x_i2c_read(uint8_t reg_addr, uint8_t *reg_data, uint32_t len, void *intf_ptr)
+BME68X_INTF_RET_TYPE bme68x_i2c_read(
+    uint8_t reg_addr,
+    uint8_t *reg_data,
+    uint32_t len,
+    void *intf_ptr)
 {
-    i2c_bus_device_handle_t intf_info = (i2c_bus_device_handle_t)intf_ptr;
-    return i2c_bus_read_bytes(intf_info, reg_addr, (uint16_t)len, reg_data);
+    i2c_master_dev_handle_t handle =
+        (i2c_master_dev_handle_t)intf_ptr;
+
+    esp_err_t err = i2c_master_transmit_receive(
+        handle,
+        &reg_addr,
+        1,
+        reg_data,
+        len,
+        1000
+    );
+
+    if (err != ESP_OK)
+    {
+        return BME68X_E_COM_FAIL;
+    }
+
+    return BME68X_INTF_RET_SUCCESS;
 }
 
 /*!
  * I2C write function map to COINES platform
  */
-BME68X_INTF_RET_TYPE bme68x_i2c_write(uint8_t reg_addr, const uint8_t *reg_data, uint32_t len, void *intf_ptr)
+BME68X_INTF_RET_TYPE bme68x_i2c_write(
+    uint8_t reg_addr,
+    const uint8_t *reg_data,
+    uint32_t len,
+    void *intf_ptr)
 {
-    i2c_bus_device_handle_t intf_info = (i2c_bus_device_handle_t)intf_ptr;
-    return i2c_bus_write_bytes(intf_info, reg_addr, len, reg_data);
+    i2c_master_dev_handle_t handle =
+        (i2c_master_dev_handle_t)intf_ptr;
+
+    uint8_t *buffer =
+        malloc(len + 1);
+
+    if (buffer == NULL)
+    {
+        return BME68X_E_COM_FAIL;
+    }
+
+    buffer[0] = reg_addr;
+
+    for (uint32_t i = 0; i < len; i++)
+    {
+        buffer[i + 1] =
+            reg_data[i];
+    }
+
+    esp_err_t err =
+        i2c_master_transmit(
+            handle,
+            buffer,
+            len + 1,
+            1000
+        );
+
+    free(buffer);
+
+    if (err != ESP_OK)
+    {
+        return BME68X_E_COM_FAIL;
+    }
+
+    return BME68X_INTF_RET_SUCCESS;
 }
 
 /*!

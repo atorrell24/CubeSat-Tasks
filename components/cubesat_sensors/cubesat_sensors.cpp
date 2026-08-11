@@ -79,7 +79,7 @@ esp_err_t sensors_init(void)
 
 
     bme_dev.intf = BME68X_I2C_INTF;
-    bme_dev.intf_ptr = &bme_i2c_handle;
+    bme_dev.intf_ptr = (void *)bme_i2c_handle;
 
     bme_dev.read = bme68x_i2c_read;
     bme_dev.write = bme68x_i2c_write;
