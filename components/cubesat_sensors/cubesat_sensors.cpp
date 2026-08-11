@@ -5,6 +5,7 @@
 #include "driver/uart.h"
 #include <esp_err.h>
 #include "i2cdev.h"
+#include <string.h>
 
 static const char *TAG = "MLX";
 static const char *GPS_TAG = "GPS";
@@ -146,12 +147,37 @@ esp_err_t sensors_read_gps(atg_data_t *out)
             }
             else if (c == '\n' || c == '\r')
             {
-                if (nmea_len > 0)
-                {
-                    nmea_buf[nmea_len] = '\0';
-                    printf("%s\n", nmea_buf);
-                    nmea_len = 0;
-                }
+                
+                nmea_buf[nmea_len] = '\0';
+                    
+                if (nmea_len >= 6)
+                    {
+                        char *star = strchr(nmea_buf, '*'); 
+                        if ( star != NULL)
+                        {
+                            uint8_t computed = 0;
+                            for (int k = 1; k < (star - nmea_buf); k++)
+                            {
+                                computed ^= (uint8_t)nmea_buf[k];
+                            }
+
+                            uint8_t received = (uint8_t)strtol(star + 1, NULL, 16);
+                            if (computed == received)
+                            {
+                                if (strncmp(nmea_buf + 3, "RMC", 3) == 0 ||
+                                    strncmp(nmea_buf + 3, "GGA", 3) == 0)
+                                {
+                                    printf("%s\n", nmea_buf);
+                                }
+                            }
+                        }
+                        
+
+                        
+                    }
+                    
+                nmea_len = 0;
+                
                 
             }
             else
