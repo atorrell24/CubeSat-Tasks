@@ -6,6 +6,8 @@
 #include <esp_err.h>
 #include "i2cdev.h"
 #include <string.h>
+#include "bme68x.h"
+#include "bme68x_i2c_helper.h"
 
 static const char *TAG = "MLX";
 static const char *GPS_TAG = "GPS";
@@ -15,6 +17,7 @@ static mlx90614_handle_t        mlx_handle;
 static const float MLX_WARN_TEMP_C     = 60.0f;
 static const float MLX_CRITICAL_TEMP_C = 80.0f;
 static i2c_master_dev_handle_t bme_i2c_handle;
+static struct bme68x_dev bme_dev;
 
 esp_err_t sensors_init(void)
 {
@@ -44,9 +47,9 @@ esp_err_t sensors_init(void)
     }
 
     ESP_LOGI(TAG, "MLX initialized");
-    return ESP_OK;
+    
 
-    ESP_LOGI(TAG, "BME: Adding device to I2C bus");
+    printf("BME: Adding device to I2C bus\n");
 
     i2c_device_config_t bme_i2c_cfg = {};
 
@@ -71,9 +74,35 @@ esp_err_t sensors_init(void)
         return err;
     }
 
-    ESP_LOGI(TAG, "BME: Device successfully added to I2C bus");
+    printf("BME: add device returned %d\n", err);
+    ESP_LOGI(TAG, "BME: Setting up Bosch driver");
 
+
+    bme_dev.intf = BME68X_I2C_INTF;
+    bme_dev.intf_ptr = &bme_i2c_handle;
+
+    bme_dev.read = bme68x_i2c_read;
+    bme_dev.write = bme68x_i2c_write;
+    bme_dev.delay_us = bme68x_delay_us;
+
+    ESP_LOGI(TAG, "BME: Starting initialization");
+
+    int8_t bme_result = bme68x_init(&bme_dev);
+
+    ESP_LOGI(TAG, "BME: bme68x_init returned %d", bme_result);
+
+    if (bme_result != BME68X_OK)
+    {
+        ESP_LOGE(TAG, "BME: Initialization failed");
+        return ESP_FAIL;
+    }
+
+    ESP_LOGI(TAG, "BME: Sensor communication successful");
+
+    return ESP_OK;
 }
+
+
 
 
 esp_err_t sensors_read_object_ambient(float *temp_a)
