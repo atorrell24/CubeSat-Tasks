@@ -14,6 +14,7 @@ static i2c_master_bus_handle_t bus_handle;
 static mlx90614_handle_t        mlx_handle;
 static const float MLX_WARN_TEMP_C     = 60.0f;
 static const float MLX_CRITICAL_TEMP_C = 80.0f;
+static i2c_master_dev_handle_t bme_i2c_handle;
 
 esp_err_t sensors_init(void)
 {
@@ -44,6 +45,34 @@ esp_err_t sensors_init(void)
 
     ESP_LOGI(TAG, "MLX initialized");
     return ESP_OK;
+
+    ESP_LOGI(TAG, "BME: Adding device to I2C bus");
+
+    i2c_device_config_t bme_i2c_cfg = {};
+
+    bme_i2c_cfg.dev_addr_length = I2C_ADDR_BIT_LEN_7;
+    bme_i2c_cfg.device_address = 0x76;
+    bme_i2c_cfg.scl_speed_hz = 100000;
+
+    err = i2c_master_bus_add_device(
+        bus_handle,
+        &bme_i2c_cfg,
+        &bme_i2c_handle
+    );
+
+    if (err != ESP_OK)
+    {
+        ESP_LOGE(
+            TAG,
+            "BME: Failed to add device: %s",
+            esp_err_to_name(err)
+        );
+
+        return err;
+    }
+
+    ESP_LOGI(TAG, "BME: Device successfully added to I2C bus");
+
 }
 
 
