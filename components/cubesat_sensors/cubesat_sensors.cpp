@@ -6,6 +6,7 @@
 #include <esp_err.h>
 #include "i2cdev.h"
 #include <string.h>
+#include <stdlib.h>
 
 static const char *TAG = "MLX";
 static const char *GPS_TAG = "GPS";
@@ -128,6 +129,129 @@ esp_err_t gps_init(void)
     
 }
 
+
+static bool nmea_field(const char *sentence,int index, char *out, size_t out_size )
+{
+    int comma_count = 0;
+    size_t written = 0;
+    
+    for (int i = 0; sentence[i] != '\0'; i++)
+    {
+        if (comma_count == index)
+        {
+            while(sentence[i] != ','&& sentence[i] != '*' && sentence[i] != '\0' && written < out_size - 1)
+            {
+                out[written] = sentence[i];
+                written++;
+                i++;
+                
+            }
+            out[written] = '\0';
+            return true;
+            
+        }
+        if (sentence[i] == ',')
+        {
+            comma_count++;
+        }
+        
+    }
+    return false;
+}
+
+
+static void parse_rmc(const char *sentence, atg_data_t *out)
+{
+    char field[16];
+    if (!nmea_field(sentence, 2, field, sizeof(field)))
+    {
+        return;
+    }
+    out->valid = (field[0] == 'A');
+    if (!out->valid)
+    {
+        return;
+    }
+    if (nmea_field(sentence, 1, field, sizeof(field)))
+    {
+        int hh = (field[0] - '0') * 10 + (field[1] - '0');
+        int mm = (field[2] - '0') * 10 + (field[3] - '0');
+        int ss = (field[4] - '0') * 10 + (field[5] - '0');
+        out->utc_seconds = hh * 3600 + mm * 60 + ss;
+    }
+    if (nmea_field(sentence, 9, field, sizeof(field)))
+    {
+        out->utc_date = (uint32_t)atoi(field);
+    }
+    if (nmea_field(sentence, 3, field, sizeof(field)) && field[0] != '\0')
+    {
+        double raw = atof(field);              
+        int    deg = (int)(raw / 100);         
+        double min = raw - (deg * 100);       
+        out->lat_deg = deg + (min / 60.0);     
+
+        char hemi[4];
+        if (nmea_field(sentence, 4, hemi, sizeof(hemi)) && hemi[0] == 'S')
+            out->lat_deg = -out->lat_deg;
+    }
+    if (nmea_field(sentence, 5, field, sizeof(field)) && field[0] != '\0')
+    {
+        double raw = atof(field);              
+        int    deg = (int)(raw / 100);         
+        double min = raw - (deg * 100);        
+        out->lon_deg = deg + (min / 60.0);     
+
+        char hemi[4];
+        if (nmea_field(sentence, 6, hemi, sizeof(hemi)) && hemi[0] == 'W')
+            out->lon_deg = -out->lon_deg;
+    }
+
+}
+
+static void parse_gga(const char *sentence, atg_data_t *out)
+{
+    char field [16];
+    if (!nmea_field(sentence, 6, field, sizeof(field))) { return; }
+    if (atoi(field) == 0) { return; }
+
+    if (nmea_field(sentence, 2, field, sizeof(field)) && field[0] != '\0')
+    {
+        double raw = atof(field);              
+        int    deg = (int)(raw / 100);         
+        double min = raw - (deg * 100);       
+        out->lat_deg = deg + (min / 60.0);     
+
+        char hemi[4];
+        if (nmea_field(sentence, 3, hemi, sizeof(hemi)) && hemi[0] == 'S')
+            out->lat_deg = -out->lat_deg;
+    }
+    if (nmea_field(sentence, 4, field, sizeof(field)) && field[0] != '\0')
+    {
+        double raw = atof(field);              
+        int    deg = (int)(raw / 100);         
+        double min = raw - (deg * 100);        
+        out->lon_deg = deg + (min / 60.0);     
+
+        char hemi[4];
+        if (nmea_field(sentence, 5, hemi, sizeof(hemi)) && hemi[0] == 'W')
+            out->lon_deg = -out->lon_deg;
+    }
+
+    if (nmea_field(sentence, 7, field, sizeof(field)) && field[0] != '\0')
+    {
+        
+        out->satellites = (uint8_t)atoi(field);
+    }
+    if (nmea_field(sentence, 9, field, sizeof(field)) && field[0] != '\0')
+    {
+        out->altitude_m = (float)atof(field);
+    }
+
+}
+
+
+
+
 esp_err_t sensors_read_gps(atg_data_t *out)
 {
     uint8_t chunk[256];
@@ -164,11 +288,15 @@ esp_err_t sensors_read_gps(atg_data_t *out)
                             uint8_t received = (uint8_t)strtol(star + 1, NULL, 16);
                             if (computed == received)
                             {
-                                if (strncmp(nmea_buf + 3, "RMC", 3) == 0 ||
-                                    strncmp(nmea_buf + 3, "GGA", 3) == 0)
+                                if (strncmp(nmea_buf + 3, "RMC",3 ) == 0)
                                 {
-                                    printf("%s\n", nmea_buf);
+                                    parse_rmc(nmea_buf, out);
                                 }
+                                if(strncmp(nmea_buf+3, "GGA", 3)==0){
+                                    parse_gga(nmea_buf,out);
+                                }
+                                
+                                
                             }
                         }
                         

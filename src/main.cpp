@@ -55,6 +55,12 @@ extern "C" void app_main(void)
             {
                 ESP_LOGW(TAG, "GPS read failed: %s", esp_err_to_name(err));
             }
+            else
+            {
+                ESP_LOGI(TAG, "GPS valid=%d lat=%.6f lon=%.6f alt=%.1f sats=%u t=%lu d=%lu",
+                         gps.valid, gps.lat_deg, gps.lon_deg, gps.altitude_m,
+                         gps.satellites, gps.utc_seconds, gps.utc_date);
+            }
         }
 
         vTaskDelay(pdMS_TO_TICKS(1000));
