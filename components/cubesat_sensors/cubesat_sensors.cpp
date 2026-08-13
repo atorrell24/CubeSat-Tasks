@@ -6,8 +6,8 @@
 #include <esp_err.h>
 #include "i2cdev.h"
 #include <string.h>
-#include "bme68x.h"
-#include "bme68x_i2c_helper.h"
+#include "bno08x_driver.h"
+
 
 static const char *TAG = "MLX";
 static const char *GPS_TAG = "GPS";
@@ -18,6 +18,10 @@ static const float MLX_WARN_TEMP_C     = 60.0f;
 static const float MLX_CRITICAL_TEMP_C = 80.0f;
 static i2c_master_dev_handle_t bme_i2c_handle;
 static struct bme68x_dev bme_dev;
+static BNO08x bno_dev;
+static BNO08x_config_t bno08x_cfg;
+
+
 
 esp_err_t sensors_init(void)
 {
@@ -75,32 +79,45 @@ esp_err_t sensors_init(void)
     }
 
     printf("BME: add device returned %d\n", err);
-    ESP_LOGI(TAG, "BME: Setting up Bosch driver");
+  
 
 
-    bme_dev.intf = BME68X_I2C_INTF;
-    bme_dev.intf_ptr = (void *)bme_i2c_handle;
 
-    bme_dev.read = bme68x_i2c_read;
-    bme_dev.write = bme68x_i2c_write;
-    bme_dev.delay_us = bme68x_delay_us;
+    bno08x_cfg = {};
 
-    ESP_LOGI(TAG, "BME: Starting initialization");
+    bno08x_cfg.spi_peripheral = SPI2_HOST;
+    bno08x_cfg.io_mosi = GPIO_NUM_41;
+    bno08x_cfg.io_miso = GPIO_NUM_42;
+    bno08x_cfg.io_sclk = GPIO_NUM_47;
+    bno08x_cfg.io_cs   = GPIO_NUM_6;
+    bno08x_cfg.io_int  = GPIO_NUM_21;
+    bno08x_cfg.io_rst  = GPIO_NUM_4;
+    bno08x_cfg.io_wake = GPIO_NUM_5;
+    bno08x_cfg.sclk_speed = 2000000;
+    bno08x_cfg.cpu_spi_intr_affinity = 0;
+    bno08x_cfg.task_priority = 5;
 
-    int8_t bme_result = bme68x_init(&bme_dev);
+    BNO08x_init(&bno_dev, &bno08x_cfg);
+    bool bno_result = BNO08x_initialize(&bno_dev);
 
-    ESP_LOGI(TAG, "BME: bme68x_init returned %d", bme_result);
 
-    if (bme_result != BME68X_OK)
-    {
-        ESP_LOGE(TAG, "BME: Initialization failed");
-        return ESP_FAIL;
-    }
-
-    ESP_LOGI(TAG, "BME: Sensor communication successful");
-
-    return ESP_OK;
+    if (!bno_result)
+{
+    ESP_LOGE(TAG, "BNO085 initialization failed");
+    return ESP_FAIL;
 }
+
+
+
+
+
+
+    printf("Sensors Initialized");
+    return ESP_OK;
+
+
+}
+
 
 
 
