@@ -470,6 +470,10 @@ bool BNO08x_receive_packet(BNO08x *device, bno08x_rx_packet_t *packet_out)
     // calculate length of packet from received header
     packet_out->length = (((uint16_t)packet_out->header[1]) << 8) | ((uint16_t)packet_out->header[0]);
     packet_out->length &= ~(1 << 15); // Clear the MSbit
+    ESP_LOGW(TAG, "hdr %02x %02x %02x %02x  len=%u",
+         packet_out->header[0], packet_out->header[1],
+         packet_out->header[2], packet_out->header[3],
+         packet_out->length);
 
 #ifdef CONFIG_ESP32_BNO08x_DEBUG_STATEMENTS
     ESP_LOGW(TAG, "packet rx length: %d", packet_out->length);

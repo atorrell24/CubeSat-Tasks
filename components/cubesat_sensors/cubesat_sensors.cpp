@@ -6,7 +6,12 @@
 #include <esp_err.h>
 #include "i2cdev.h"
 #include <string.h>
+#include "bme68x.h"
+#include "bme68x_defs.h"
+
+extern "C" {
 #include "bno08x_driver.h"
+}
 
 
 static const char *TAG = "MLX";
