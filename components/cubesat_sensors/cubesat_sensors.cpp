@@ -30,6 +30,7 @@ static BNO08x_config_t bno08x_cfg;
 
 esp_err_t sensors_init(void)
 {
+    
     i2c_master_bus_config_t bus_cfg = {};   // start with every field zeroed
     bus_cfg.i2c_port          = I2C_NUM_0;
     bus_cfg.sda_io_num        = GPIO_NUM_8;
