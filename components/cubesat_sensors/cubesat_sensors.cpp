@@ -3,6 +3,7 @@
 #include "driver/i2c_master.h"  
 #include "esp_log.h"
 #include "driver/uart.h"
+#include "esp_timer.h"
 #include <esp_err.h>
 #include "i2cdev.h"
 #include <string.h>
@@ -90,6 +91,8 @@ static const int GPS_rx_buffer_size = 2048;
 
 static char nmea_buf[100];
 static int  nmea_len = 0;
+static const int64_t GPS_STALE_TIMEOUT_US = 5000000;
+static int64_t gps_last_valid_us = 0;
 
 
 
@@ -172,6 +175,7 @@ static void parse_rmc(const char *sentence, atg_data_t *out)
     {
         return;
     }
+    gps_last_valid_us = esp_timer_get_time();
     if (nmea_field(sentence, 1, field, sizeof(field)))
     {
         int hh = (field[0] - '0') * 10 + (field[1] - '0');
@@ -208,12 +212,19 @@ static void parse_rmc(const char *sentence, atg_data_t *out)
 
 }
 
-static void parse_gga(const char *sentence, atg_data_t *out)
+static void parse_gga(const char *sentence, atg_data_t *out)                //// status is owned by parse_gga (satellite count lives there)
 {
     char field [16];
-    if (!nmea_field(sentence, 6, field, sizeof(field))) { return; }
-    if (atoi(field) == 0) { return; }
 
+    if (!nmea_field(sentence, 6, field, sizeof(field))) { return; }
+
+    
+    if (atoi(field) == 0)
+    {
+        out->status = SENSOR_CRITICAL;
+        return;
+    }
+    
     if (nmea_field(sentence, 2, field, sizeof(field)) && field[0] != '\0')
     {
         double raw = atof(field);              
@@ -241,6 +252,12 @@ static void parse_gga(const char *sentence, atg_data_t *out)
     {
         
         out->satellites = (uint8_t)atoi(field);
+        if (out->satellites < 4)
+        {out->status = SENSOR_CRITICAL;}
+        else if (out->satellites < 6)
+        {out->status = SENSOR_WARNING;}
+        else
+        {out->status = SENSOR_NOMINAL;}
     }
     if (nmea_field(sentence, 9, field, sizeof(field)) && field[0] != '\0')
     {
@@ -321,6 +338,11 @@ esp_err_t sensors_read_gps(atg_data_t *out)
                 }
             }
         }
+    }
+    if ((esp_timer_get_time() - gps_last_valid_us) > GPS_STALE_TIMEOUT_US)
+    {
+        out->valid = false;
+        out->status = SENSOR_CRITICAL;
     }
     return ESP_OK;
 }

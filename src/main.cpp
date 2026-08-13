@@ -57,9 +57,9 @@ extern "C" void app_main(void)
             }
             else
             {
-                ESP_LOGI(TAG, "GPS valid=%d lat=%.6f lon=%.6f alt=%.1f sats=%u t=%lu d=%lu",
+                ESP_LOGI(TAG, "GPS valid=%d lat=%.6f lon=%.6f alt=%.1f sats=%u status=%d t=%lu d=%lu",
                          gps.valid, gps.lat_deg, gps.lon_deg, gps.altitude_m,
-                         gps.satellites, gps.utc_seconds, gps.utc_date);
+                         gps.satellites, gps.status, gps.utc_seconds, gps.utc_date);
             }
         }
 
