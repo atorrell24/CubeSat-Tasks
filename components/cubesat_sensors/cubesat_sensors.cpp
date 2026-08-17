@@ -1,5 +1,5 @@
 #include "cubesat_sensors.h"   
-#include "mlx90614.h"           
+#include "mlx90614.h"       
 #include "driver/i2c_master.h"  
 #include "esp_log.h"
 #include "driver/uart.h"
@@ -11,11 +11,43 @@
 
 static const char *TAG = "MLX";
 static const char *GPS_TAG = "GPS";
+static const char *INA_TAG = "INA";
 
 static i2c_master_bus_handle_t bus_handle;
 static mlx90614_handle_t        mlx_handle;
 static const float MLX_WARN_TEMP_C     = 60.0f;
 static const float MLX_CRITICAL_TEMP_C = 80.0f;
+
+static i2c_master_dev_handle_t ina_handle;
+
+
+static esp_err_t ina_read_reg(uint8_t reg, uint16_t *out)
+{
+    uint8_t write_buf[1] = {reg};
+    uint8_t read_buf[2] = {0};
+
+    esp_err_t err = i2c_master_transmit_receive(ina_handle, write_buf, 1, read_buf, 2, 1000);
+    if (err != ESP_OK)
+    {
+        return err;
+    }
+    *out = ((uint16_t)read_buf[0] << 8) | read_buf[1];
+    return ESP_OK;
+}
+
+static esp_err_t ina_write_reg(uint8_t reg, uint16_t value)
+{
+   uint8_t buf[3];
+    buf[0] = reg;
+    buf[1] = (uint8_t)(value >> 8);
+    buf[2] = (uint8_t)(value & 0xFF);
+
+    return i2c_master_transmit(ina_handle, buf, 3, 1000);
+    
+}
+
+static const uint16_t INA_CAL_VALUE     = 13429;
+static const float    INA_CURRENT_LSB_A = 1.0f / 32768.0f;
 
 esp_err_t sensors_init(void)
 {
@@ -37,6 +69,9 @@ esp_err_t sensors_init(void)
     mlx90614_config_t mlx_cfg = {};   // start with every field zeroed
     mlx_cfg.mlx90614_device.device_address = MLX90614_DEFAULT_ADDRESS;
     mlx_cfg.mlx90614_device.scl_speed_hz   = 100000;
+
+
+    
     
     err = mlx90614_init(bus_handle, &mlx_cfg, &mlx_handle);
     if (err != ESP_OK) {
@@ -45,8 +80,43 @@ esp_err_t sensors_init(void)
     }
 
     ESP_LOGI(TAG, "MLX initialized");
+    
+
+
+    i2c_device_config_t ina_cfg = {};
+    ina_cfg.dev_addr_length = I2C_ADDR_BIT_LEN_7;
+    ina_cfg.device_address = 0x40;
+    ina_cfg.scl_speed_hz = 100000;
+
+    err = i2c_master_bus_add_device(bus_handle, &ina_cfg, &ina_handle);
+    if (err != ESP_OK)
+    {
+        ESP_LOGE(INA_TAG, "INA219 was unsuccessfully added to the I2C Bus: %s", esp_err_to_name(err));
+        return err;
+    }
+    ESP_LOGI(INA_TAG, "INA added to I2C Bus.");
+
+    err = ina_write_reg(0x05, INA_CAL_VALUE);
+    if (err != ESP_OK)
+    {
+        ESP_LOGE(INA_TAG, "INA219 calibration write failed: %s", esp_err_to_name(err));
+        return err;
+    }
+    uint16_t cal_check = 0;
+    err = ina_read_reg(0x05, &cal_check);
+    if (err != ESP_OK)
+    {
+        ESP_LOGE(INA_TAG, "INA219 calibration read-back failed: %s", esp_err_to_name(err));
+        return err;
+    }
+
+    ESP_LOGI(INA_TAG, "INA219 calibrated, register reads %u (expected %u)",
+             cal_check, INA_CAL_VALUE);
+    
     return ESP_OK;
+
 }
+
 
 
 esp_err_t sensors_read_object_ambient(float *temp_a)
@@ -82,6 +152,31 @@ esp_err_t sensors_read_mlx(mlx_data_t *out)
 }
 
 
+esp_err_t sensors_read_ina(ina_data_t *out)
+{
+    uint16_t raw_bus = 0;
+    uint16_t raw_cur = 0;
+
+    esp_err_t err = ina_read_reg(0x02, &raw_bus);
+    if (err != ESP_OK) return err;
+
+    err = ina_read_reg(0x04, &raw_cur);
+    if (err != ESP_OK) return err;
+
+    // Bus voltage: bits 15-3 hold the value, bits 2-0 are status flags.
+    // Each count is 4 mV.
+    out->voltage_V = (float)(raw_bus >> 3) * 0.004f;
+
+    // Current register is SIGNED — cast before scaling or reverse
+    // current reads as a huge positive number.
+    out->current_mA = (float)(int16_t)raw_cur * INA_CURRENT_LSB_A * 1000.0f;
+
+    out->power_mW = out->voltage_V * out->current_mA;
+
+    out->status = SENSOR_NOMINAL;   // thresholds once you have a baseline
+
+    return ESP_OK;
+}
 
 static const uart_port_t GPS_UART_port =  UART_NUM_1;
 static const int GPS_tx_pin = 1;

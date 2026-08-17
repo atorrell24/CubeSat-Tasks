@@ -63,6 +63,19 @@ extern "C" void app_main(void)
             }
         }
 
+        //ina logic 
+        ina_data_t ina = {};
+        err = sensors_read_ina(&ina);
+        if (err == ESP_OK)
+        {
+            ESP_LOGI(TAG, "INA  %.3f V   %.2f mA   %.1f mW",
+                     ina.voltage_V, ina.current_mA, ina.power_mW);
+        }
+        else
+        {
+            ESP_LOGW(TAG, "INA read failed: %s", esp_err_to_name(err));
+        }
+
         vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }

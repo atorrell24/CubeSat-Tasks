@@ -36,6 +36,20 @@ esp_err_t sensors_read_mlx(mlx_data_t *out);
 // Variables and Structs.
 
 typedef struct {
+    float voltage_V; 
+    float current_mA;
+    float power_mW;
+    sensor_status_t status;
+
+} ina_data_t;
+
+esp_err_t sensors_read_ina(ina_data_t *out);
+
+
+
+
+
+typedef struct {
     uint32_t utc_seconds;
     uint32_t utc_date;
     double lat_deg;
