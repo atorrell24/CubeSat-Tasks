@@ -47,6 +47,12 @@ typedef struct {
 
 } atg_data_t;
 
+esp_err_t sensors_read_bno_accel(
+    float *x,
+    float *y,
+    float *z
+);
+
 esp_err_t gps_init(void);
 esp_err_t sensors_read_gps(atg_data_t *out);
 

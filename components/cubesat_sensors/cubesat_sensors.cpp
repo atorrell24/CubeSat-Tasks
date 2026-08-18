@@ -95,10 +95,10 @@ esp_err_t sensors_init(void)
     bno08x_cfg.io_mosi = GPIO_NUM_41;
     bno08x_cfg.io_miso = GPIO_NUM_42;
     bno08x_cfg.io_sclk = GPIO_NUM_47;
-    bno08x_cfg.io_cs   = GPIO_NUM_6;
+    bno08x_cfg.io_cs   = GPIO_NUM_48;
     bno08x_cfg.io_int  = GPIO_NUM_21;
-    bno08x_cfg.io_rst  = GPIO_NUM_4;
-    bno08x_cfg.io_wake = GPIO_NUM_5;
+    bno08x_cfg.io_rst  = GPIO_NUM_NC;
+    bno08x_cfg.io_wake = GPIO_NUM_NC;
     bno08x_cfg.sclk_speed = 2000000;
     bno08x_cfg.cpu_spi_intr_affinity = 0;
     bno08x_cfg.task_priority = 5;
@@ -113,6 +113,12 @@ esp_err_t sensors_init(void)
     return ESP_FAIL;
 }
 
+    BNO08x_enable_accelerometer(
+        &bno_dev,
+        100000
+    );
+
+    printf("BNO accelerometer enabled\n");
 
 
 
@@ -278,3 +284,25 @@ esp_err_t sensors_read_gps(atg_data_t *out)
     return ESP_OK;
 }
 
+esp_err_t sensors_read_bno_accel(
+    float *x,
+    float *y,
+    float *z)
+{
+    uint8_t accuracy;
+
+    if (!BNO08x_data_available(&bno_dev))
+    {
+        return ESP_ERR_NOT_FOUND;
+    }
+
+    BNO08x_get_accel(
+        &bno_dev,
+        x,
+        y,
+        z,
+        &accuracy
+    );
+
+    return ESP_OK;
+}

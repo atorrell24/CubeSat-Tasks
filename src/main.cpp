@@ -57,6 +57,31 @@ extern "C" void app_main(void)
             }
         }
 
+
+
+        //BNO
+         float accel_x = 0.0f;
+        float accel_y = 0.0f;
+        float accel_z = 0.0f;
+
+        err = sensors_read_bno_accel(
+            &accel_x,
+            &accel_y,
+            &accel_z
+        );
+        
+        if (err == ESP_OK)
+        {
+            ESP_LOGI(
+                TAG,
+                "BNO Accel X: %.2f  Y: %.2f  Z: %.2f",
+                accel_x,
+                accel_y,
+                accel_z
+            );
+        }
+
+
         vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }
