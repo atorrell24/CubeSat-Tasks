@@ -53,8 +53,8 @@ esp_err_t sensors_init(void)
 {
     i2c_master_bus_config_t bus_cfg = {};   // start with every field zeroed
     bus_cfg.i2c_port          = I2C_NUM_0;
-    bus_cfg.sda_io_num        = GPIO_NUM_8;
-    bus_cfg.scl_io_num        = GPIO_NUM_9;
+    bus_cfg.sda_io_num        = GPIO_NUM_1;
+    bus_cfg.scl_io_num        = GPIO_NUM_14;
     bus_cfg.clk_source        = I2C_CLK_SRC_DEFAULT;
     bus_cfg.glitch_ignore_cnt = 7;
     bus_cfg.flags.enable_internal_pullup = true;
@@ -179,7 +179,6 @@ esp_err_t sensors_read_ina(ina_data_t *out)
 }
 
 static const uart_port_t GPS_UART_port =  UART_NUM_1;
-static const int GPS_tx_pin = 1;
 static const int GPS_rx_pin = 2;
 static const int GPS_baud_rate = 9600;
 static const int GPS_rx_buffer_size = 2048;
@@ -208,7 +207,7 @@ esp_err_t gps_init(void)
     }
 
 
-    err = uart_set_pin(GPS_UART_port, GPS_tx_pin, GPS_rx_pin, UART_PIN_NO_CHANGE,UART_PIN_NO_CHANGE);
+    err = uart_set_pin(GPS_UART_port, UART_PIN_NO_CHANGE, GPS_rx_pin, UART_PIN_NO_CHANGE,UART_PIN_NO_CHANGE);
     if (err != ESP_OK) {
         ESP_LOGE(GPS_TAG, "Pins failed to initialize: %s", esp_err_to_name(err));
         return err;
@@ -385,6 +384,8 @@ esp_err_t sensors_read_gps(atg_data_t *out)
             {
                 
                 nmea_buf[nmea_len] = '\0';
+
+                
                     
                 if (nmea_len >= 6)
                     {
