@@ -4,6 +4,7 @@
 #include "esp_log.h"
 #include "driver/uart.h"
 #include "esp_timer.h"
+#include "esp_camera.h"
 #include <esp_err.h>
 #include "i2cdev.h"
 #include <string.h>
@@ -12,6 +13,7 @@
 static const char *TAG = "MLX";
 static const char *GPS_TAG = "GPS";
 static const char *INA_TAG = "INA";
+static const char *CAM_TAG = "CAM";
 
 static i2c_master_bus_handle_t bus_handle;
 static mlx90614_handle_t        mlx_handle;
@@ -441,5 +443,64 @@ esp_err_t sensors_read_gps(atg_data_t *out)
         out->status = SENSOR_CRITICAL;
     }
     return ESP_OK;
+}
+
+
+esp_err_t camera_init(void)
+{
+    camera_config_t cfg = {};
+    
+    cfg.xclk_freq_hz = 20000000;
+    cfg.pixel_format = PIXFORMAT_JPEG;
+    cfg.frame_size   = FRAMESIZE_VGA;
+    cfg.jpeg_quality = 12;
+    cfg.fb_count     = 1;
+    cfg.fb_location  = CAMERA_FB_IN_PSRAM;
+    cfg.grab_mode    = CAMERA_GRAB_WHEN_EMPTY;
+    cfg.ledc_timer   = LEDC_TIMER_0;
+    cfg.ledc_channel = LEDC_CHANNEL_0;
+    
+    cfg.pin_pwdn = -1;
+    cfg.pin_reset = -1;
+    cfg.pin_xclk = 15;
+    cfg.pin_sccb_scl = 5;
+    cfg.pin_sccb_sda = 4;
+    cfg.pin_d7 = 16;
+    cfg.pin_d6 = 17;
+    cfg.pin_d5 = 18;
+    cfg.pin_d4 = 12;
+    cfg.pin_d3 = 10;
+    cfg.pin_d2 = 8;
+    cfg.pin_d1 = 9;
+    cfg.pin_d0 = 11;
+    cfg.pin_vsync = 6;
+    cfg.pin_href = 7;
+    cfg.pin_pclk = 13;
+
+    esp_err_t err = esp_camera_init(&cfg);
+    if (err != ESP_OK)
+    {
+        ESP_LOGE(CAM_TAG, "camera init failed: %s", esp_err_to_name(err));
+        return err;
+    }
+    ESP_LOGI(CAM_TAG, "camera initialized");
+    return ESP_OK;
+}
+
+esp_err_t camera_capture_to_sd (void)
+{
+    camera_fb_t * fb = esp_camera_fb_get();
+        if (fb == NULL) {
+            ESP_LOGE(CAM_TAG, "camera capture failed");
+            return ESP_FAIL;
+        }
+    
+    ESP_LOGI(CAM_TAG, "captured %u bytes", fb->len);
+
+        
+    esp_camera_fb_return(fb);
+
+    return ESP_OK;
+
 }
 

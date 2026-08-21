@@ -45,6 +45,8 @@ typedef struct {
 
 esp_err_t sensors_read_ina(ina_data_t *out);
 
+esp_err_t camera_init(void);
+esp_err_t camera_capture_to_sd(void);
 
 
 

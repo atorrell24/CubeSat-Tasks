@@ -6,5 +6,5 @@
 .pio/
 managed_components/
 dependencies.lock
-sdkconfig*
+sdkconfig.esp32-s3-devkitm-1
 build/

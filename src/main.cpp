@@ -22,6 +22,22 @@ extern "C" void app_main(void)
         gps_ok = false;   // keep running — other sensors still work
     }
 
+    bool cam_ok = true;
+    err = camera_init();
+    if (err != ESP_OK)
+    {
+        ESP_LOGE(TAG, "camera init failed: %s", esp_err_to_name(err));
+        cam_ok = false;
+    }
+      if (cam_ok)
+    {
+        err = camera_capture_to_sd();
+        if (err != ESP_OK)
+        {
+            ESP_LOGE(TAG, "capture failed: %s", esp_err_to_name(err));
+        }
+    }
+
     while (true)
     {
         //MLX90614 Logic------------------------
