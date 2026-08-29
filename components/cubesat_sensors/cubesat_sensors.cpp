@@ -9,11 +9,16 @@
 #include "i2cdev.h"
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include "esp_vfs_fat.h"
+#include "sdmmc_cmd.h"
+#include "driver/sdmmc_host.h"
 
 static const char *TAG = "MLX";
 static const char *GPS_TAG = "GPS";
 static const char *INA_TAG = "INA";
 static const char *CAM_TAG = "CAM";
+static const char *SD_TAG = "SD";
 
 static i2c_master_bus_handle_t bus_handle;
 static mlx90614_handle_t        mlx_handle;
@@ -487,20 +492,84 @@ esp_err_t camera_init(void)
     return ESP_OK;
 }
 
-esp_err_t camera_capture_to_sd (void)
+esp_err_t camera_capture_to_sd(void)
 {
-    camera_fb_t * fb = esp_camera_fb_get();
-        if (fb == NULL) {
-            ESP_LOGE(CAM_TAG, "camera capture failed");
-            return ESP_FAIL;
-        }
-    
-    ESP_LOGI(CAM_TAG, "captured %u bytes", fb->len);
+    static int img_counter = 0;
 
-        
-    esp_camera_fb_return(fb);
+    camera_fb_t *fb = esp_camera_fb_get();
+    if (fb == NULL)
+    {
+        ESP_LOGE(CAM_TAG, "camera capture failed");
+        return ESP_FAIL;
+    }
+
+    char path[64];
+    snprintf(path, sizeof(path), "/sdcard/img_%04d.jpg", img_counter);
+
+    esp_err_t err = sd_write_file(path, fb->buf, fb->len);
+
+    esp_camera_fb_return(fb);     
+
+    if (err != ESP_OK)
+    {
+        ESP_LOGE(CAM_TAG, "failed to write %s", path);
+        return err;
+    }
+
+    ESP_LOGI(CAM_TAG, "wrote %s (%u bytes)", path, fb->len);
+    img_counter++;
 
     return ESP_OK;
-
 }
 
+static sdmmc_card_t *sd_card = NULL;
+esp_err_t sd_init(void)
+{
+    
+    sdmmc_host_t host = SDMMC_HOST_DEFAULT();
+    sdmmc_slot_config_t slot = SDMMC_SLOT_CONFIG_DEFAULT();
+    slot.width = 1;
+    slot.clk = GPIO_NUM_39;
+    slot.cmd = GPIO_NUM_38;
+    slot.d0 = GPIO_NUM_40;
+
+    esp_vfs_fat_mount_config_t mount = {};
+    mount.format_if_mount_failed = false;
+    mount.max_files = 5;
+    mount.allocation_unit_size = 16 * 1024;
+
+
+    
+    esp_err_t err = esp_vfs_fat_sdmmc_mount("/sdcard", &host, &slot, &mount, &sd_card );
+    if (err != ESP_OK)
+    {
+        ESP_LOGE(SD_TAG, "SD mount failed: %s", esp_err_to_name(err));
+        return err;
+    }
+    ESP_LOGI(SD_TAG, "SD card mounted at /sdcard");
+    sdmmc_card_print_info(stdout, sd_card);
+    return ESP_OK;
+}
+
+
+static esp_err_t sd_write_file(const char *path, const uint8_t *data, size_t len)
+{
+    FILE *file_ptr;
+    file_ptr = fopen(path, "wb");
+    if (file_ptr == NULL) {
+        ESP_LOGE(SD_TAG, "failed to open %s", path);
+        return ESP_FAIL;
+    }
+
+    size_t written = fwrite(data, 1, len, file_ptr);
+    fclose(file_ptr);
+
+    if (written != len)
+    {
+        ESP_LOGE(SD_TAG, "short write to %s: %u of %u bytes",
+                 path, (unsigned)written, (unsigned)len);
+        return ESP_FAIL;
+    }
+
+    return ESP_OK;
+}

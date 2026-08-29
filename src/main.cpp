@@ -19,8 +19,18 @@ extern "C" void app_main(void)
     if (err != ESP_OK)
     {
         ESP_LOGE(TAG, "GPS init failed: %s", esp_err_to_name(err));
-        gps_ok = false;   // keep running — other sensors still work
+        gps_ok = false;   
     }
+
+    bool sd_ok = true;
+    err = sd_init();
+    if ( err != ESP_OK)
+    {
+        ESP_LOGE(TAG, "SD init failed: %s", esp_err_to_name(err));
+        sd_ok = false;
+    }
+
+
 
     bool cam_ok = true;
     err = camera_init();
